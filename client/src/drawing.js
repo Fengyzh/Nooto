@@ -91,14 +91,14 @@ export default function Drawing() {
     }
 
 
-    const handleScroll = () => {
+    const handleScroll = (index) => {
        // Right now it will only scroll to the first element
 
         let boxes = document.getElementsByClassName("section-containers");
-        console.log(boxes[0].getBoundingClientRect().top)
+        console.log(boxes[index].getBoundingClientRect().top)
         console.log(boxes[1].getBoundingClientRect().top)
         //boxes[0].scrollIntoView({ behavior: 'smooth' })
-       const y = boxes[0].getBoundingClientRect().top + window.pageYOffset - 30
+       const y = boxes[index].getBoundingClientRect().top + window.pageYOffset - 30
         window.scrollTo({top:y, behavior: 'smooth'})
     }
 
@@ -132,7 +132,17 @@ export default function Drawing() {
 
 
     return (
-        <>
+        <div className='container'>
+        <div className='nav-panel'>
+         
+            {state.values.map((value, index)=>{
+            return <div className='section-text' onClick={()=>{handleScroll(index)}}>{value.title}</div>
+        })}
+
+        </div>
+
+        
+
         <div class="board">
        {state.Id?  <h3>ID is: {state.Id}</h3> : <h3>New Document</h3>}
        
@@ -170,9 +180,9 @@ export default function Drawing() {
             <button onClick={handleSave}> Save </button>
             
            
-            <button onClick={handleScroll}> scroll </button>
+            {/*<button onClick={handleScroll(0)}> scroll </button>*/}
             
             </div>
-            </>
+            </div>
     )
 }
