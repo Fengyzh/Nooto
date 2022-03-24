@@ -67,7 +67,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 90%;
+  width: 100%;
 }
 
 .btn {
@@ -94,20 +94,23 @@
 }
 
 .nav-panel{
-  width: 10%;
+  white-space: nowrap;
+  width: 0;
   height: 500px;
   top: 20%;
   margin-left: 1rem;
-  padding: 1rem;
+  padding: 0;
   border-radius: 30px;
   position: sticky;
   background-color: black;
   transition: 0.3s;
 }
 
+
 .section-text{
   color: white;
   cursor: pointer;
+  user-select: none;
   transition: 0.3s;
 }
 
@@ -118,4 +121,31 @@
 
 .markdown-title{
   padding: 0 1rem; 
+}
+
+.back-btn{
+  color:white;
+  cursor: pointer;
+}
+
+.tool-bar{
+  background-color: red;
+  margin-left: 2rem;
+  width: 0;
+  
+}
+
+.open-panel{
+  position: sticky;
+  top: 0;
+  width: 1.5rem;
+}
+
+.panel-btn{
+  margin-top: 0;
+  padding-top: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+  transform-origin: center;
+  user-select: none;
 }

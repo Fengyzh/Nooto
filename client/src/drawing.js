@@ -9,6 +9,7 @@ export default function Drawing() {
 
     let {id} = useParams();
 
+    const [panel, setPanel] = useState(false)
 
     const [state, setstate] = useState({
         Id: "",
@@ -91,6 +92,38 @@ export default function Drawing() {
     }
 
 
+    const retractPanel = () => {
+        
+        setPanel(!panel)
+        let navPanel = document.getElementsByClassName("nav-panel")[0];
+        let item = document.getElementsByClassName("section-text");
+        let arrow = document.getElementsByClassName("panel-btn")[0];
+
+
+
+        let boolean = panel
+
+        for (let i of item) {
+            boolean? 
+            i.style.display = "none" :
+            i.style.display = "block"
+        }
+
+        if (boolean) {
+            arrow.style.transform = "rotateY(0deg)"
+            navPanel.style.padding = 0;
+            navPanel.style.width = 0;
+            navPanel.style.opacity = 0;
+        } else {
+            arrow.style.transform = "rotateY(180deg)"
+            navPanel.style.padding = "1rem";
+            navPanel.style.width = "10%";
+            navPanel.style.opacity = 100;
+        }
+        
+    }
+
+
     const handleScroll = (index) => {
        // Right now it will only scroll to the first element
 
@@ -133,12 +166,18 @@ export default function Drawing() {
 
     return (
         <div className='container'>
+        
+        <div className='tool-bar'>
+            <div className="open-panel">
+                <h1 className='panel-btn' onClick={()=>retractPanel()}> {`>`} </h1>
+            </div>
+        </div>
         <div className='nav-panel'>
          
             {state.values.map((value, index)=>{
             return <div className='section-text' onClick={()=>{handleScroll(index)}}>{value.title}</div>
         })}
-
+        <h1 className='back-btn' onClick={()=>retractPanel()}> {`<`} </h1>
         </div>
 
         
