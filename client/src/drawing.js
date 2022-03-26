@@ -51,6 +51,10 @@ export default function Drawing() {
         setstate({...state, values:title}) 
         //console.log(state[index])
         console.log(state)
+
+        e.target.style.height = "auto";
+        e.target.style.height = e.target.scrollHeight + "px";
+
     }
 
     function handleEdit(index) {
@@ -58,6 +62,23 @@ export default function Drawing() {
         value[index]["edit"] = !value[index]["edit"]
         setstate({...state, values:value})
         console.log(state)
+
+
+        /*
+        let textField = document.getElementsByClassName("textarea")[index];
+        let markdownField = document.getElementsByClassName("results")[index];
+        console.log("text: ", markdownField)
+
+        if (state.values[index].edit == false){
+            textField.style.opacity = 0
+            textField.style.display = "none"
+            markdownField.style.display = "block"
+        } else {
+            textField.style.opacity = 1
+            textField.style.display = "block"
+            markdownField.style.display = "none"
+        }
+*/
     }
 
     function handleCloseAll() {
@@ -98,7 +119,7 @@ export default function Drawing() {
         let navPanel = document.getElementsByClassName("nav-panel")[0];
         let item = document.getElementsByClassName("section-text");
         let arrow = document.getElementsByClassName("panel-btn")[0];
-
+        let board = document.getElementsByClassName("board")[0];
 
 
         let boolean = panel
@@ -114,11 +135,15 @@ export default function Drawing() {
             navPanel.style.padding = 0;
             navPanel.style.width = 0;
             navPanel.style.opacity = 0;
+            navPanel.style.minWidth = "0"
+            navPanel.style.transform = "translateX(-100px)"
         } else {
             arrow.style.transform = "rotateY(180deg)"
             navPanel.style.padding = "1rem";
-            navPanel.style.width = "10%";
+            navPanel.style.width = "15%";
             navPanel.style.opacity = 100;
+            navPanel.style.minWidth = "15%"
+            navPanel.style.transform = "translateX(100px)"
         }
         
     }
@@ -147,25 +172,86 @@ export default function Drawing() {
             this.style.height = this.scrollHeight + "px";
           });
         }*/
-
+        let markdownFields = document.getElementsByClassName("results");
+        let textFields = document.getElementsByClassName("textarea");
 
 
 
         axios.get(`posts/${id}`).then((res) => {
             if (res.data != 'Cannot find note') {
                 setstate({Id:res.data._id,values:res.data.values})
-    
+                
                 console.log(res.data)
             } 
+        }).then(()=>{
+            for (let i = 0; i < state.values.length; i++) {
+
+                if (state.values[i].edit) {
+                    textFields[i].style.height = "auto";
+                    textFields[i].style.height = textFields[i].scrollHeight + "px"
+                }
+            }
+
+
+            /*
+            for (let i = 0; i < state.values.length; i++) {
+                if (state.values[i].edit == false){
+                    textFields[i].style.opacity = 0
+                    textFields[i].style.display = "none"
+                    markdownFields[i].style.display = "block"
+                } else {
+                    textFields[i].style.opacity = 1
+                    textFields[i].style.display = "block"
+                    markdownFields[i].style.display = "none"
+                }
+
+               
+                textFields[i].style.height = "auto";
+                textFields[i].style.height = textFields[i].scrollHeight + "px"
+                
+            }*/
         })
 
     }, [])
-   
+    
+    useEffect(() => {
+        
+        
+        for (let i = 0; i < state.values.length; i++) {
+            
+            if (state.values[i].edit) {
+                let textField = document.getElementsByClassName("textarea"+i)[0];
+                if (textField != undefined){
+                    textField.style.height = "auto";
+                    textField.style.height = textField.scrollHeight + "px"
+                }
+                /*
+                textField.style.height = "auto";
+                textField.style.height = textField.scrollHeight + "px"
+                */
+            }
+            
+    }
+
+    /*
+    let text = document.getElementsByClassName("textarea")
+    console.log(text)
+    */
+    }, [state])
+    
 
 
 
     return (
+
+    <div>
+
+        {/* TEMP FIX, Need a "Loading" indicator when fetching from server
+        for now, if the first section is empty, it will say "loading" */}
+        {state.values[0].value?
+        
         <div className='container'>
+        
         
         <div className='tool-bar'>
             <div className="open-panel">
@@ -173,10 +259,14 @@ export default function Drawing() {
             </div>
         </div>
         <div className='nav-panel'>
-         
-            {state.values.map((value, index)=>{
-            return <div className='section-text' onClick={()=>{handleScroll(index)}}>{value.title}</div>
-        })}
+         {panel?
+            state.values.map((value, index)=>{
+            return <div className='section-text' onClick={()=>{handleScroll(index)}}>
+                {value.title.length <= 30? value.title : value.title.substring(0,30)+"..."}
+
+                </div>
+        })
+        :""}
         <h1 className='back-btn' onClick={()=>retractPanel()}> {`<`} </h1>
         </div>
 
@@ -189,24 +279,33 @@ export default function Drawing() {
 
             {state.values.map((st, index) => (
             <div key={index} className="section-containers">
-                <input value={st.title} className="titles" onChange={(e) => handleTitleChange(index, e)}>
-                
-                </input>
+
+                {/* Title textareas*/}
+                <textarea value={st.title} className="titles" onChange={(e) => handleTitleChange(index, e)}>
+                </textarea>
+                <button className="expand-btn">Expand</button>
+
+
                 {console.log(st.edit)}
+                <h2 className='mode-title'> {st.edit?"Edit Mode":"Markdown Mode"} </h2>
                 {st.edit?
                 <div>
-                <textarea class="textarea" placeholder='Enter text here' value={st.value} onChange={(e) => handleChange(index, e)}>
+
+                  {/* Package it into an react comp so it can take values */}   
+                <textarea className={`textarea textarea${index}`} placeholder='Enter text here' value={st.value} onChange={(e) => handleChange(index, e)}>
 
 
                 </textarea>
                 <h1>{index}</h1>
                 </div>
                 : ""}
-                <h1 className='markdown-title'>Markdown</h1>
+                    {/*<h1 className='markdown-title'>Markdown</h1>*/}
                 <div>
                     <ReactMarkdown children={st.value} className="results"/>
-                
                 </div>
+               
+                
+
                 <button class="toggle-btn btn" onClick={() => handleEdit(index)}> Toggle Edit </button>
                 <button class="delete-btn btn" onClick={() => handleDelete(index)}> Delete Section </button>
 
@@ -222,6 +321,9 @@ export default function Drawing() {
             {/*<button onClick={handleScroll(0)}> scroll </button>*/}
             
             </div>
+            
             </div>
+            : "Loading"}
+        </div>
     )
 }
