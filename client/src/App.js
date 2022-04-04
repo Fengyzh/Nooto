@@ -8,6 +8,9 @@ import Profile from './profile';
 import axios from 'axios';
 import { userContext } from './userContext';
 import Drawing from './drawing';
+import HomePage from './compoents/HomePage';
+
+
 
 function App() {
 
@@ -57,7 +60,9 @@ function App() {
    the name*/}
      
          {console.log("Auth: " + auth)}
-    <Route path="/:id" element={<Drawing/>} />
+  
+    <Route path='/' element={<HomePage/>} />
+    <Route path="/doc/:id" element={<Drawing/>} />
     <Route path="/login" element={<Login isAuth={auth}/>}/>
     <Route path="/profile" element={<Profile isAuth={auth} name={auth.name}/>} />
    

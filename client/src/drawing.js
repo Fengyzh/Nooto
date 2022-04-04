@@ -15,13 +15,32 @@ export default function Drawing() {
         Id: "",
         values: [{
         title: "New Section",
-        value: "",
-        edit: true
+        value: [{
+            text: "good",
+            editable: true
+        },
+        {
+            text: "bye",
+            editable: false
+        }
+                ],
+
     }, 
+
+    // Next Section
+
     {
         title: "New Section",
-        value:"",
-        edit: true
+        value: [{
+            text: "good2",
+            editable: true
+        },
+        {
+            text: "bye2",
+            editable: false
+        }
+                ],
+
     }
 
 ]})
@@ -30,9 +49,9 @@ export default function Drawing() {
         setstate({...state,values:[...state.values, {title: "New Section", value:"New Block", edit: true}]})
     }
 
-    function handleChange(index, e) {
+    function handleChange(index, e, vIndex) {
         const value = [...state.values]    //Spread the state into individual array elements
-        value[index]["value"] = e.target.value  //Set the key named "value" in that index to the input
+        value[index]["value"][vIndex]["text"] = e.target.value  //Set the key named "value" in that index to the input
         setstate({...state,values:value}) //Update the state with the new state
         //console.log(state["values"][index])
         //console.log(state)
@@ -57,12 +76,11 @@ export default function Drawing() {
 
     }
 
-    function handleEdit(index) {
+    function handleEdit(index, vIndex) {
         const value = [...state.values]    
-        value[index]["edit"] = !value[index]["edit"]
+        //value[index]["edit"] = !value[index]["edit"]
+        value[index]["value"][vIndex]["editable"] = !value[index]["value"][vIndex]["editable"]
         setstate({...state, values:value})
-        console.log(state)
-
 
         /*
         let textField = document.getElementsByClassName("textarea")[index];
@@ -161,6 +179,47 @@ export default function Drawing() {
     }
 
 
+    const handleAdditionalBlock = (index) => {
+        let value = state.values
+        value[index]["value"].push({
+            text: "New Block",
+            editable: true
+        })
+        
+        setstate({...state, values: value})
+
+    }
+
+    const handleBlockDelete = (vIndex,index) => {
+
+        /* 
+    function handleDelete(index) {
+        console.log("index: " + index)
+        const value = [...state.values]
+        console.log(value)
+        value.splice(index,1)
+        setstate({...state, values: value})
+        console.log(state)
+        console.log(state.Id)
+    } */
+
+    let value = [...state.values]
+    value[index]["value"].splice(vIndex,1)
+    setstate({...state, values: value})
+
+
+    }
+
+
+
+    const handleTitleExpand = (index) => {
+        let targetTitle = document.getElementsByClassName("titles")[index];
+
+        targetTitle.style.height = "auto";
+        targetTitle.style.height = targetTitle.scrollHeight + "px";
+    }
+
+
 
 
     useEffect(() => {
@@ -175,9 +234,11 @@ export default function Drawing() {
         let markdownFields = document.getElementsByClassName("results");
         let textFields = document.getElementsByClassName("textarea");
 
+    
 
 
-        axios.get(`posts/${id}`).then((res) => {
+        axios.get(`/posts/${id}`).then((res) => {
+
             if (res.data != 'Cannot find note') {
                 setstate({Id:res.data._id,values:res.data.values})
                 
@@ -185,10 +246,13 @@ export default function Drawing() {
             } 
         }).then(()=>{
             for (let i = 0; i < state.values.length; i++) {
-
-                if (state.values[i].edit) {
-                    textFields[i].style.height = "auto";
-                    textFields[i].style.height = textFields[i].scrollHeight + "px"
+                for (let j = 0; j < state.values[i]["value"].length; j++) {
+                    
+                    if (state.values[i]["value"][j].editable) {
+                        console.log(999)
+                        textFields[i+j].style.height = "auto";
+                        textFields[i+j].style.height = textFields[i+j].scrollHeight + "px"
+                    }
                 }
             }
 
@@ -216,20 +280,19 @@ export default function Drawing() {
     
     useEffect(() => {
         
-        
+  
         for (let i = 0; i < state.values.length; i++) {
-            
-            if (state.values[i].edit) {
-                let textField = document.getElementsByClassName("textarea"+i)[0];
-                if (textField != undefined){
-                    textField.style.height = "auto";
-                    textField.style.height = textField.scrollHeight + "px"
+            for (let j = 0; j < state.values[i]["value"].length; j++){
+                //if (state.values[i].edit) {
+                if (state.values[i]["value"][j].editable) {
+                    let textField = document.getElementsByClassName("textarea"+i.toString()+j.toString())[0];
+                    if (textField != undefined){
+                        textField.style.height = "auto";
+                        textField.style.height = textField.scrollHeight + "px"
+                    }
+                   
                 }
-                /*
-                textField.style.height = "auto";
-                textField.style.height = textField.scrollHeight + "px"
-                */
-            }
+        }
             
     }
 
@@ -237,7 +300,7 @@ export default function Drawing() {
     let text = document.getElementsByClassName("textarea")
     console.log(text)
     */
-    }, [state])
+    }, [state.values])
     
 
 
@@ -245,7 +308,7 @@ export default function Drawing() {
     return (
 
     <div>
-
+        {console.log(state)}
         {/* TEMP FIX, Need a "Loading" indicator when fetching from server
         for now, if the first section is empty, it will say "loading" */}
         {state.values[0].value?
@@ -283,34 +346,49 @@ export default function Drawing() {
                 {/* Title textareas*/}
                 <textarea value={st.title} className="titles" onChange={(e) => handleTitleChange(index, e)}>
                 </textarea>
-                <button className="expand-btn">Expand</button>
+                {/*
+                <button onClick={()=>handleTitleExpand(index)} className="expand-btn">Expand</button>*/}
 
 
                 {console.log(st.edit)}
-                <h2 className='mode-title'> {st.edit?"Edit Mode":"Markdown Mode"} </h2>
-                {st.edit?
-                <div>
 
+                {st.value.map((v,vIndex) => (
+                    
+                
+
+                <div className='block-container'>
+                <h2 className='mode-title'> {v.editable?"Edit Mode":"Markdown Mode"} </h2>
+                {v.editable?
+
+                
+                <div>
                   {/* Package it into an react comp so it can take values */}   
-                <textarea className={`textarea textarea${index}`} placeholder='Enter text here' value={st.value} onChange={(e) => handleChange(index, e)}>
+                <textarea className={`textarea textarea${index}${vIndex}`} placeholder='Enter text here' value={v.text} onChange={(e) => handleChange(index, e, vIndex)}>
 
 
                 </textarea>
-                <h1>{index}</h1>
+                {/*<h1>{index}</h1>*/}
                 </div>
                 : ""}
                     {/*<h1 className='markdown-title'>Markdown</h1>*/}
                 <div>
-                    <ReactMarkdown children={st.value} className="results"/>
+                        <ReactMarkdown children={v.text} className="results"/>
                 </div>
-               
-                
 
-                <button class="toggle-btn btn" onClick={() => handleEdit(index)}> Toggle Edit </button>
-                <button class="delete-btn btn" onClick={() => handleDelete(index)}> Delete Section </button>
+                
+               
+                {/* TODO: Move the "Add Additional Block" out of the loop*/}
+
+                
+                <button class="toggle-btn btn" onClick={() => handleEdit(index, vIndex)}> Toggle Edit </button>
+                <button class="delete-btn btn" onClick={() => handleBlockDelete(vIndex, index)}> Delete Block </button>
+
+                </div>))}
 
                 {/*<input type="text" value={st.value} onChange={(e) => handleChange(index, e)}/>*/}
-                
+                <button onClick={()=>handleAdditionalBlock(index)} className='btn'> Add Additional Block</button>
+                <button class="delete-btn btn" onClick={() => handleDelete(index)}> Delete Section </button>
+
             </div>)) }
             
             <button onClick={handleAdd}>Add</button>

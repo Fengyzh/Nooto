@@ -3,7 +3,7 @@ const cors = require("cors");
 var session = require('express-session');
 const mongoose = require('mongoose')
 const notes = require('./notes')
-
+const noo = require('./newNote')
 
 const app = express(); 
 const port = 5000; 
@@ -95,16 +95,30 @@ app.post('/save', async (req, res) => {
 
     console.log("save....")
     //console.log(req.body.values)
+    /*
     let note = new notes({
         values: req.body.values
     });
+    */
 
+    let note = new noo({
+        values: req.body.values
+    })
+/*
     try {
         note = await notes.findById({"_id": req.body.id});
         note.values = req.body.values
     } catch {
         console.log("new note")
+    }*/
+
+    try {
+        note = await noo.findById({"_id": req.body.id});
+        note.values = req.body.values
+    }catch{
+        console.log("new note")
     }
+
     /*
     const noteSave = new notes({
         values: req.body.values
@@ -122,7 +136,7 @@ app.get('/posts/:id', async (req, res) => {
     console.log("id:" + req.params.id)
     
     try {
-        const note = await notes.findById({"_id": req.params.id});
+        const note = await noo.findById({"_id": req.params.id});
         //console.log(note)
         res.json(note)
     } catch (err) {

@@ -1,4 +1,7 @@
 body{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   overflow-x: hidden;
 }
 
@@ -28,7 +31,7 @@ body{
     background-color: white;
     border: 0.5rem solid gray;
     margin-bottom: 3rem;
-    width: 80%;
+    width: 80vw;
     display: flex;
     flex-direction: column;
     border-radius: 20px;
@@ -73,6 +76,7 @@ body{
   padding: 20px 20px;
   overflow-wrap: break-word;
   border: 0.3rem solid black;
+  margin-top: 1rem;
 }
 
 
@@ -82,7 +86,7 @@ body{
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding-left: 100px;
+  padding-left: 8%;
 }
 
 .btn {
@@ -103,11 +107,21 @@ body{
   background-color: black;
 }
 
+.block-container{
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.block-container:first-of-type{
+  margin-top: 0;
+}
+
 .container{
   display: flex;
   box-sizing: border-box;
-  width: 100%;
+
 }
+
 
 .nav-panel{
   white-space: nowrap;
