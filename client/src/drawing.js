@@ -82,6 +82,8 @@ export default function Drawing() {
         value[index]["value"][vIndex]["editable"] = !value[index]["value"][vIndex]["editable"]
         setstate({...state, values:value})
 
+
+
         /*
         let textField = document.getElementsByClassName("textarea")[index];
         let markdownField = document.getElementsByClassName("results")[index];
@@ -161,7 +163,8 @@ export default function Drawing() {
             navPanel.style.width = "15%";
             navPanel.style.opacity = 100;
             navPanel.style.minWidth = "15%"
-            navPanel.style.transform = "translateX(100px)"
+            navPanel.style.transform = "translateX(10px)"
+
         }
         
     }
@@ -300,7 +303,7 @@ export default function Drawing() {
     let text = document.getElementsByClassName("textarea")
     console.log(text)
     */
-    }, [state.values])
+    }, [])
     
 
 
@@ -358,18 +361,20 @@ export default function Drawing() {
 
                 <div className='block-container'>
                 <h2 className='mode-title'> {v.editable?"Edit Mode":"Markdown Mode"} </h2>
-                {v.editable?
+                {/*v.editable?*/}
 
                 
                 <div>
+                  {/* style={{display: fieldState? "inline-block" : "none"}} */}
                   {/* Package it into an react comp so it can take values */}   
-                <textarea className={`textarea textarea${index}${vIndex}`} placeholder='Enter text here' value={v.text} onChange={(e) => handleChange(index, e, vIndex)}>
+                <textarea style={{display: v.editable? "block" : "none"}} className={`textarea textarea${index}${vIndex}`} placeholder='Enter text here' value={v.text} onChange={(e) => handleChange(index, e, vIndex)}>
 
 
                 </textarea>
                 {/*<h1>{index}</h1>*/}
                 </div>
-                : ""}
+              
+              
                     {/*<h1 className='markdown-title'>Markdown</h1>*/}
                 <div>
                         <ReactMarkdown children={v.text} className="results"/>
