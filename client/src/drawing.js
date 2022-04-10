@@ -10,6 +10,7 @@ export default function Drawing() {
     let {id} = useParams();
 
     const [panel, setPanel] = useState(false)
+    const [right, setRight] = useState(false)
 
     const [state, setstate] = useState({
         Id: "",
@@ -46,7 +47,17 @@ export default function Drawing() {
 ]})
 
     function handleAdd() {
-        setstate({...state,values:[...state.values, {title: "New Section", value:"New Block", edit: true}]})
+        setstate({...state,values:[...state.values, {title: "New Section", value:[{
+            text: "good2",
+            editable: true
+        },
+        {
+            text: "bye2",
+            editable: false
+        }
+            ], edit: true}]})
+
+
     }
 
     function handleChange(index, e, vIndex) {
@@ -141,6 +152,9 @@ export default function Drawing() {
         let arrow = document.getElementsByClassName("panel-btn")[0];
         let board = document.getElementsByClassName("board")[0];
 
+        if (right) {
+            handleRight()
+        }
 
         let boolean = panel
 
@@ -157,13 +171,15 @@ export default function Drawing() {
             navPanel.style.opacity = 0;
             navPanel.style.minWidth = "0"
             navPanel.style.transform = "translateX(-100px)"
+            board.style.marginLeft="0"
         } else {
             arrow.style.transform = "rotateY(180deg)"
             navPanel.style.padding = "1rem";
             navPanel.style.width = "15%";
             navPanel.style.opacity = 100;
             navPanel.style.minWidth = "15%"
-            navPanel.style.transform = "translateX(10px)"
+            navPanel.style.transform = "translateX(0)"
+            board.style.marginLeft="-1rem"
 
         }
         
@@ -222,6 +238,32 @@ export default function Drawing() {
         targetTitle.style.height = targetTitle.scrollHeight + "px";
     }
 
+
+    const handleRight = () => {
+        let rightPanel = document.getElementsByClassName("right")[0];
+        let board = document.getElementsByClassName("board")[0];
+
+        setRight(!right)
+
+        if (!right) {
+            if (panel) {
+              retractPanel()
+            }
+
+            rightPanel.style.width="40vw"
+            board.style.width="60vw"
+            board.style.marginRight="-4rem"
+        } else {
+            rightPanel.style.width="0"
+            board.style.width="100vw"
+            board.style.marginRight="0"
+        }
+        
+       // window.scrollTo({left:100, behavior: 'smooth'})
+
+        
+
+    }
 
 
 
@@ -320,7 +362,10 @@ export default function Drawing() {
         
         
         <div className='tool-bar'>
+        
+
             <div className="open-panel">
+                <button className='right-btn' onClick={handleRight}>Open Right</button>
                 <h1 className='panel-btn' onClick={()=>retractPanel()}> {`>`} </h1>
             </div>
         </div>
@@ -403,7 +448,18 @@ export default function Drawing() {
            
             {/*<button onClick={handleScroll(0)}> scroll </button>*/}
             
+
             </div>
+            
+            {/* Board ends here */}
+        
+
+          <div className="right">
+                    <h1>Edit Panel</h1>
+
+
+          </div>
+
             
             </div>
             : "Loading"}
