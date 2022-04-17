@@ -11,22 +11,23 @@ export default function Drawing() {
 
     const [panel, setPanel] = useState(false)
     const [right, setRight] = useState(false)
+    const [rightContent, setRightContent] = useState()
 
     const [state, setstate] = useState({
         Id: "",
         values: [{
-        title: "New Section",
-        value: [{
-            text: "good",
-            editable: true
-        },
-        {
-            text: "bye",
-            editable: false
-        }
-                ],
+            title: "New Section",
+            value: [{
+                text: "good",
+                editable: true
+            },
+            {
+                text: "bye",
+                editable: false
+            }
+                    ],
 
-    }, 
+        }, 
 
     // Next Section
 
@@ -88,10 +89,24 @@ export default function Drawing() {
     }
 
     function handleEdit(index, vIndex) {
-        const value = [...state.values]    
+        let value = [...state.values]    
         //value[index]["edit"] = !value[index]["edit"]
         value[index]["value"][vIndex]["editable"] = !value[index]["value"][vIndex]["editable"]
         setstate({...state, values:value})
+        setRightContent({index:index, vIndex:vIndex})
+
+        /*
+        for (let i = 0; i < state.values[index]["value"].length; i++) {
+            if (state.values[index]["value"]["editable"] && i != vIndex) {
+                value[index]["value"][i]["editable"] = !value[index]["value"][i]["editable"]
+                setstate({...state, values:value})
+            }
+        }
+        */
+
+        if (!right) {
+            handleRight()
+        }
 
 
 
@@ -261,8 +276,23 @@ export default function Drawing() {
         
        // window.scrollTo({left:100, behavior: 'smooth'})
 
-        
 
+    }
+
+    
+    const EditThis = (index, vIndex) => {
+        let value = [...state.values]
+        //value[index]["value"][vIndex]["editable"] = !value[index]["value"][vIndex]["editable"]
+    
+        //setstate({...state, values:value})
+        setRightContent({index:index, vIndex:vIndex})
+
+        if (!right) {
+            handleRight()
+        }
+
+    
+    
     }
 
 
@@ -432,6 +462,9 @@ export default function Drawing() {
                 
                 <button class="toggle-btn btn" onClick={() => handleEdit(index, vIndex)}> Toggle Edit </button>
                 <button class="delete-btn btn" onClick={() => handleBlockDelete(vIndex, index)}> Delete Block </button>
+                <button class="toggle-btn btn" onClick={() => EditThis(index, vIndex)}>Edit This </button>
+
+
 
                 </div>))}
 
@@ -455,9 +488,15 @@ export default function Drawing() {
         
 
           <div className="right">
-                    <h1>Edit Panel</h1>
+                    <h1 className='edit-panel-title'>Edit Panel</h1>
 
-
+                    {rightContent 
+                    
+                    ? 
+                    
+                    <textarea className='textareaRight' value={state.values[rightContent.index]["value"][rightContent.vIndex]["text"]} onChange={(e) => handleChange(rightContent.index, e, rightContent.vIndex)}></textarea>
+                    
+                    : "Not editing any block"}
           </div>
 
             
