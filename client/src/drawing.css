@@ -212,7 +212,8 @@ body{
 
 
 .right{
-  background-color: white;
+  /*background-color: white;*/
+  background: rgb(247, 247, 247);
   width: 0;
   flex-shrink: 0;
   flex-grow: 0;
@@ -221,7 +222,7 @@ body{
   position: sticky;
   border-radius: 30px;
   top: 6%;
-  box-shadow: 5px 5px 20px;
+  box-shadow: 5px 2px 10px;
   text-align: center;
 
 }
@@ -238,12 +239,14 @@ body{
 }
 
 .textareaRight{
+  background: rgb(247, 247, 247);
   font-family: Arial, Helvetica, sans-serif;
   display: block;
   width: 85%;
   overflow:auto;
   height: 80%;
   max-height: 80%;
+  min-height: 30%;
   margin-left: 2rem;
   line-height: 20px;
   /*height:auto;*/
@@ -252,6 +255,24 @@ body{
   border-radius: 20px;
   padding: 20px 20px;
   padding-bottom: 0;
-  border: 0.3rem solid black;
+  /*border: 0.3rem solid white;*/
+  outline: none;
+  border: none;
+  box-shadow: 10px 5px 7px rgb(211, 211, 211), 
+            -10px -5px 7px rgb(241, 241, 241),
+
+            -10px -7px 10px transparent inset, 
+            10px 5px 7px transparent inset;
   transition: 0.5s;
+}
+
+.textareaRight:focus{
+  /*border: 0.3rem solid black;*/
+  box-shadow: 
+  10px 5px 7px transparent, 
+  -10px -5px 7px transparent,
+  
+  -10px -5px 7px rgb(211, 211, 211) inset, 
+  10px 5px 7px rgb(241, 241, 241) inset;
+
 }

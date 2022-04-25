@@ -7,6 +7,23 @@ import axios from 'axios';
 
 export default function Drawing() {
 
+/*
+    What I did last time:
+        Created a "EditThis" function so the user can click this to open the edit panel
+        instead of having to toggle.
+            - Do this because we don't want users to edit multiple blocks at the same time
+
+    Debug:
+        Appearently the "Auto re-size for textarea" in useEffect affect the textarea in the
+        right text panel, even thought the textarea class doesn't follow the format of the old
+        textarea
+
+
+*/
+
+
+
+
     let {id} = useParams();
 
     const [panel, setPanel] = useState(false)
