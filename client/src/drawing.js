@@ -505,7 +505,17 @@ export default function Drawing() {
         
 
           <div className="right">
+
+                    <div className='right-title-container'>
+                    <button className='right-back-btn'>
+                        {"<"}
+                    </button>
+                    
                     <h1 className='edit-panel-title'>Edit Panel</h1>
+
+                    </div>
+
+
 
                     {rightContent 
                     
@@ -514,6 +524,7 @@ export default function Drawing() {
                     <textarea className='textareaRight' value={state.values[rightContent.index]["value"][rightContent.vIndex]["text"]} onChange={(e) => handleChange(rightContent.index, e, rightContent.vIndex)}></textarea>
                     
                     : "Not editing any block"}
+
           </div>
 
             
