@@ -274,6 +274,8 @@ export default function Drawing() {
     const handleRight = () => {
         let rightPanel = document.getElementsByClassName("right")[0];
         let board = document.getElementsByClassName("board")[0];
+        let backBtn = document.getElementsByClassName("right-back-btn")[0];
+
 
         setRight(!right)
 
@@ -281,11 +283,12 @@ export default function Drawing() {
             if (panel) {
               retractPanel()
             }
-
+            backBtn.style.transform = "rotateY(0)"
             rightPanel.style.width="40vw"
             board.style.width="60vw"
             board.style.marginRight="-4rem"
         } else {
+            backBtn.style.transform = "rotateY(180)"
             rightPanel.style.width="0"
             board.style.width="100vw"
             board.style.marginRight="0"
@@ -307,10 +310,8 @@ export default function Drawing() {
         if (!right) {
             handleRight()
         }
-
-    
-    
     }
+
 
 
 
@@ -507,12 +508,12 @@ export default function Drawing() {
           <div className="right">
 
                     <div className='right-title-container'>
-                    <button className='right-back-btn'>
-                        {"<"}
+                    <button className='right-back-btn' onClick={()=> handleRight()}>
+                        {">"}
                     </button>
-                    
-                    <h1 className='edit-panel-title'>Edit Panel</h1>
-
+                    <div className='edit-panel-title'>
+                        <h1>Edit Panel</h1>
+                    </div>
                     </div>
 
 
