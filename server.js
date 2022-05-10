@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const notes = require('./notes')
 const noo = require('./newNote')
 
-//Hello
+//Hello lol
 
 const app = express(); 
 const port = 4000; 
