@@ -6,7 +6,7 @@ const notes = require('./notes')
 const noo = require('./newNote')
 
 const app = express(); 
-const port = 5000; 
+const port = 4000; 
 
 // This is in main
 

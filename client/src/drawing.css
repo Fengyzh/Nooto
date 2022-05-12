@@ -242,7 +242,7 @@ body{
   background: rgb(247, 247, 247);
   font-family: Arial, Helvetica, sans-serif;
   display: block;
-  width: 41rem;
+  width: 36rem;
   overflow:auto;
   height: 80%;
   max-height: 80%;
@@ -295,4 +295,10 @@ body{
   background-color: white;
   border: none;
   cursor: pointer;
+}
+
+pre{
+  background-color: rgb(227, 226, 226);
+  padding: 1rem 1rem;
+  border-radius: 10px;
 }

@@ -413,7 +413,7 @@ export default function Drawing() {
         
 
             <div className="open-panel">
-                <button className='right-btn' onClick={handleRight}>Open Right</button>
+                {/*<button className='right-btn' onClick={handleRight}>Open Right</button> */}
                 <h1 className='panel-btn' onClick={()=>retractPanel()}> {`>`} </h1>
             </div>
         </div>
