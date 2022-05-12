@@ -8,6 +8,8 @@ const noo = require('./newNote')
 const app = express(); 
 const port = 5000; 
 
+// This is in main
+
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
