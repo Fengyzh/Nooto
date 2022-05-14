@@ -36,7 +36,7 @@ export default function Drawing() {
             title: "New Section",
             value: [{
                 text: "good",
-                editable: true
+                editable: false
             },
             {
                 text: "bye",
@@ -52,7 +52,7 @@ export default function Drawing() {
         title: "New Section",
         value: [{
             text: "good2",
-            editable: true
+            editable: false
         },
         {
             text: "bye2",
@@ -121,10 +121,11 @@ export default function Drawing() {
         }
         */
 
+        /*
         if (!right) {
             handleRight()
         }
-
+        */
 
 
         /*
@@ -223,10 +224,9 @@ export default function Drawing() {
 
         let boxes = document.getElementsByClassName("section-containers");
         console.log(boxes[index].getBoundingClientRect().top)
-        console.log(boxes[1].getBoundingClientRect().top)
         //boxes[0].scrollIntoView({ behavior: 'smooth' })
        const y = boxes[index].getBoundingClientRect().top + window.pageYOffset - 30
-        window.scrollTo({top:y, behavior: 'smooth'})
+        window.scrollTo({top:y, left:0, behavior: 'smooth'})
     }
 
 
@@ -274,7 +274,10 @@ export default function Drawing() {
     const handleRight = () => {
         let rightPanel = document.getElementsByClassName("right")[0];
         let board = document.getElementsByClassName("board")[0];
-        let backBtn = document.getElementsByClassName("right-back-btn")[0];
+        let leftArrow = document.getElementsByClassName("arrow-btn")[0];
+        let rightArrow = document.getElementsByClassName("arrow-btn")[1];
+
+        //let backBtn = document.getElementsByClassName("right-back-btn")[0];
 
 
         setRight(!right)
@@ -283,15 +286,17 @@ export default function Drawing() {
             if (panel) {
               retractPanel()
             }
-            backBtn.style.transform = "rotateY(0)"
             rightPanel.style.width="40vw"
-            board.style.width="60vw"
-            board.style.marginRight="-4rem"
+            board.style.width="60%"
+            board.style.marginRight="0rem"
+            leftArrow.style.transform="rotateY(180deg)"
+            rightArrow.style.transform="rotateY(180deg)"
         } else {
-            backBtn.style.transform = "rotateY(180)"
             rightPanel.style.width="0"
-            board.style.width="100vw"
+            board.style.width="100%"
             board.style.marginRight="0"
+            leftArrow.style.transform="rotateY(0deg)"
+            rightArrow.style.transform="rotateY(0deg)"
         }
         
        // window.scrollTo({left:100, behavior: 'smooth'})
@@ -324,6 +329,14 @@ export default function Drawing() {
             this.style.height = this.scrollHeight + "px";
           });
         }*/
+        /*
+        document.addEventListener('scroll', function(e) {
+            if (window.pageXOffset >= 4) {
+                window.scrollTo({left:0, behavior: 'smooth'})
+            }
+        })
+        */
+
         let markdownFields = document.getElementsByClassName("results");
         let textFields = document.getElementsByClassName("textarea");
 
@@ -400,23 +413,33 @@ export default function Drawing() {
 
     return (
 
-    <div>
+    <div className="full">
         {console.log(state)}
         {/* TEMP FIX, Need a "Loading" indicator when fetching from server
         for now, if the first section is empty, it will say "loading" */}
         {state.values[0].value?
-        
+        <div>
+            <div className='nav-bar'>
+                <h1 className='title'>Nooto</h1>
+                <h1 className='panel-btn' onClick={()=>retractPanel()}> {`>`} </h1>
+                <div className='panel-btn edit-btn' onClick={()=>handleRight()}>
+                    <h1 className='arrow-btn'> {`<`}</h1>
+                    <h1 className='arrow-btn'> {`>`}</h1>
+                </div>
+            </div>
+
+
         <div className='container'>
-        
+
         
         <div className='tool-bar'>
-        
-
             <div className="open-panel">
                 {/*<button className='right-btn' onClick={handleRight}>Open Right</button> */}
-                <h1 className='panel-btn' onClick={()=>retractPanel()}> {`>`} </h1>
+                
             </div>
         </div>
+
+
         <div className='nav-panel'>
          {panel?
             state.values.map((value, index)=>{
@@ -492,10 +515,12 @@ export default function Drawing() {
 
             </div>)) }
             
-            <button onClick={handleAdd}>Add</button>
-            <button onClick={handleCloseAll}>Close All Edit</button>
-            <button onClick={handleSave}> Save </button>
-            
+            <div className='footer'>
+                <button className='util-btn add-btn' onClick={handleAdd}> + Add Section</button>
+                {/*<button onClick={handleCloseAll}>Close All Edit</button>*/}
+                <button className='util-btn save-btn' onClick={handleSave}> v Save Nooto</button>
+            </div>
+
            
             {/*<button onClick={handleScroll(0)}> scroll </button>*/}
             
@@ -504,7 +529,6 @@ export default function Drawing() {
             
             {/* Board ends here */}
         
-
           <div className="right">
 
                     <div className='right-title-container'>
@@ -521,14 +545,15 @@ export default function Drawing() {
                     {rightContent 
                     
                     ? 
-                    
-                    <textarea className='textareaRight' value={state.values[rightContent.index]["value"][rightContent.vIndex]["text"]} onChange={(e) => handleChange(rightContent.index, e, rightContent.vIndex)}></textarea>
-                    
+                    <textarea className='textareaRight' value={state.values[rightContent.index]["value"][rightContent.vIndex]["text"]} onChange={(e) => handleChange(rightContent.index, e, rightContent.vIndex)}>
+                    </textarea>
+
                     : "Not editing any block"}
 
           </div>
 
             
+            </div>
             </div>
             : "Loading"}
         </div>

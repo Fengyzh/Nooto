@@ -3,6 +3,21 @@ body{
   padding: 0;
   box-sizing: border-box;
   overflow-x: hidden;
+  overflow-y: auto;
+  max-width: 100%;
+  width: 100%;
+}
+
+html {
+  max-width: 100%;
+  box-sizing: border-box;
+
+}
+
+.full {
+  height: 100%;
+  width: 100%;
+  
 }
 
 .textarea {
@@ -37,8 +52,6 @@ body{
     border-radius: 20px;
     padding: 2rem;
     transition: 0.3s;
-    margin-left: -50px;
-    
   }
 
 
@@ -87,8 +100,9 @@ body{
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100vw;
+  width: 100%;
   flex-shrink: 0;
+  margin-left: 0;
   transition: 0.3s;
 }
 
@@ -123,10 +137,10 @@ body{
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;
-  width: 100vw;
+  width: 100%;
   margin: 0;
   padding: 0;
-  overflow-anchor: none
+  overflow-anchor: none;
 }
 
 
@@ -134,8 +148,8 @@ body{
   white-space: nowrap;
   width: 0;
   min-width: 0;
-  height: 700px;
-  top: 15%;
+  height: 600px;
+  top: 12%;
   /*margin-left: -100px;*/
   transform: translateX(-100px);
   padding: 0;
@@ -185,7 +199,7 @@ body{
 
 .tool-bar{
   background-color: red;
-  margin-left: 2rem;
+  margin-left: 0;
   width: 0;
   
 }
@@ -197,12 +211,14 @@ body{
 }
 
 .panel-btn{
-  margin-top: 0;
-  padding-top: 1rem;
+  margin: 0;
+  margin-left:1rem;
+  /*padding-top: 1rem;*/
   cursor: pointer;
   transition: 0.3s;
   transform-origin: center;
   user-select: none;
+  color: white;
 }
 
 .test{
@@ -218,12 +234,13 @@ body{
   flex-shrink: 0;
   flex-grow: 0;
   transition: 0.3s;
-  height: 900px;
+  height: 800px;
   position: sticky;
   border-radius: 30px;
-  top: 6%;
+  top: 12%;
   box-shadow: 5px 2px 10px;
   text-align: center;
+  overflow: hidden;
 
 }
 
@@ -242,7 +259,7 @@ body{
   background: rgb(247, 247, 247);
   font-family: Arial, Helvetica, sans-serif;
   display: block;
-  width: 36rem;
+  width: 34vw;
   overflow:auto;
   height: 80%;
   max-height: 80%;
@@ -301,4 +318,63 @@ pre{
   background-color: rgb(227, 226, 226);
   padding: 1rem 1rem;
   border-radius: 10px;
+}
+
+.nav-bar{
+  position: -webkit-sticky;
+  margin: 0;
+  top: 0;
+  width: 100%;
+  background-color: black;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  height: 3rem;
+}
+
+.title{
+  color: white;
+  margin: 0;
+  margin-left: 3rem;
+}
+
+.edit-btn{
+  margin-left: auto;
+  margin-right: 3rem;
+  display: flex;
+}
+
+.arrow-btn{
+  transition: 0.3s;
+}
+
+.add-btn{
+  background-color: rgb(0, 0, 0);
+  color: white;
+}
+
+.save-btn{
+  background-color: rgb(140, 253, 148);
+}
+
+.util-btn{
+  padding: 0.5rem 3rem;
+  border-radius: 20px;
+  font-size: 110%;
+  font-weight: bold;
+  cursor: pointer;
+  border-color: transparent;
+}
+
+.footer{
+  padding-bottom: 10vh;
+  width: 50rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+@media only screen and (max-width: 600px) {
+  .full{
+    width: 100%;
+  }
 }
