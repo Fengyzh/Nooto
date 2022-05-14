@@ -263,11 +263,18 @@ export default function Drawing() {
 
 
 
-    const handleTitleExpand = (index) => {
+    const handleTitleExpand = (index, e) => {
         let targetTitle = document.getElementsByClassName("titles")[index];
+        let titleHeight = targetTitle.style.maxHeight;
 
-        targetTitle.style.height = "auto";
-        targetTitle.style.height = targetTitle.scrollHeight + "px";
+        console.log(titleHeight)
+        if (titleHeight == "max-content") {
+            targetTitle.style.maxHeight = "3rem";
+        } else {
+            targetTitle.style.maxHeight = "max-content";
+        }
+        //targetTitle.style.height = "auto";
+        //targetTitle.style.height = targetTitle.scrollHeight + "px";
     }
 
 
@@ -316,6 +323,10 @@ export default function Drawing() {
             handleRight()
         }
     }
+
+
+
+
 
 
 
@@ -444,7 +455,7 @@ export default function Drawing() {
          {panel?
             state.values.map((value, index)=>{
             return <div className='section-text' onClick={()=>{handleScroll(index)}}>
-                {value.title.length <= 30? value.title : value.title.substring(0,30)+"..."}
+                {value.title.length <= 20? value.title : value.title.substring(0,20)+"..."}
 
                 </div>
         })
@@ -463,8 +474,18 @@ export default function Drawing() {
             <div key={index} className="section-containers">
 
                 {/* Title textareas*/}
+                <div className='title-section'>
                 <textarea value={st.title} className="titles" onChange={(e) => handleTitleChange(index, e)}>
                 </textarea>
+                
+                {st.title.length >= 50? 
+                
+                <button className='title-expand-btn' onClick={(e)=>{handleTitleExpand(index,e)}}>
+                    Expand Title
+                </button>
+                
+                :""}
+                </div>
                 {/*
                 <button onClick={()=>handleTitleExpand(index)} className="expand-btn">Expand</button>*/}
 
