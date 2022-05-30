@@ -4,6 +4,7 @@ var session = require('express-session');
 const mongoose = require('mongoose')
 const notes = require('./notes')
 const noo = require('./newNote')
+const User = require('./User')
 
 const app = express(); 
 const port = 4000; 
@@ -104,6 +105,7 @@ app.post('/save', async (req, res) => {
     */
 
     let note = new noo({
+        title: req.body.title,
         values: req.body.values
     })
 /*
@@ -145,6 +147,56 @@ app.get('/posts/:id', async (req, res) => {
         res.json("Cannot find note")
     }
 })
+
+app.post('/userTest', (req,res) => {
+    console.log("Saving User")
+
+    console.log(req.body.Email)
+    console.log(req.body.UID)
+
+    /*
+        let user = new User({
+            Email: req.body.Email,
+            UID: req.body.UID,
+            Nooto: ["6241f98cba8bd3aa074e0e49"]
+        })
+
+        user.save()
+        */
+        
+})
+
+
+app.get("/userTest/:id", async (req, res)=>{
+
+    try {
+        const user = await User.findById({"_id": req.params.id}).populate("Nooto");
+        //console.log(note)
+        //res.json(note)
+        //console.log(user)
+        res.json(user)
+    } catch (err) {
+        //res.json("Cannot find note")
+        console.log("err")
+    }
+
+
+})
+
+
+app.get("/user/getnooto/:uid", async (req, res) => {
+    try {
+        const user = await User.findById({"_id": req.params.uid}).populate("Nooto", "title");
+        //console.log(note)
+        //res.json(note)
+        //console.log(user)
+        res.json(user)
+    } catch (err) {
+        //res.json("Cannot find note")
+        console.log("err")
+    }
+})
+
 
 
 mongoose.connect('mongodb+srv://Feng:Feng1293875db@cluster0.odbkl.mongodb.net/Nooto?retryWrites=true&w=majority', () => {

@@ -3,17 +3,18 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { userContext } from './userContext';
+import { UserAuth } from './AuthContext';
 
 
 
 export default function Login({isAuth}) {
-    const {auth, setauth} = useContext(userContext)
-    const [UserName, setUsername] = useState("")
-    const [Password, setPassword] = useState("")
-    const [state, setstate] = useState(false)
+    //const {auth, setauth} = useContext(userContext)
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
-    const pass = useRef()
     let navigate = useNavigate();
+
+    const { login, currentUser } = UserAuth()
 
     
   
@@ -37,55 +38,34 @@ export default function Login({isAuth}) {
     }, [])
 */
 
-
-    useEffect(() => {
-        var form = document.getElementById("form");
-    function handleForm(event) { event.preventDefault(); } 
-    form.addEventListener('submit', handleForm);
-
-       
-    })
-  
-
-
-     const login_user = () => {
-            axios.post('/login', {
-                username: UserName,
-                password: pass.current.value
-             }).then((response) => setauth(response.data.auth))
-             
-            
-
-            //.then(isAuth? navigate("/profile") : navigate("/login"))
+ const handleSubmit = async (e) => {
+     e.preventDefault()
+    try {
+        await login(email, password)
+        console.log("logged in")
+        navigate("/profile")
+    } catch (err) {
+        console.log(err.message)
     }
-
-    const logout = () => {
-        axios.get('/logout').then((response) => setauth(response.data.auth))
-         //navigate('/profile')
-
-
-        //.then(isAuth? navigate("/profile") : navigate("/login"))
-}
+ }
 
 
 
     return (
 
         <div>
-            {auth? <p>Logged in</p> : <p>Not logged in</p>}
-            {auth? navigate("/profile") : ""}
-            <form id="form" onSubmit={login_user}>
+            <form id="form" onSubmit={(handleSubmit)}>
 
-                <label for="username_field"> Username: </label>
-                <input type="text" id="username_field" name ="username"/>
+                <label for="username_field"> Email: </label>
+                <input onChange={(e)=>setEmail(e.target.value)} type="text" id="username_field" name ="username"/>
 
                 <label for="password_field"> Password: </label>
-                <input ref={pass} type="text" id="password_field" name ="password"/>
+                <input onChange={(e)=>setPassword(e.target.value)} type="text" id="password_field" name ="password"/>
 
                 <input type="submit" value="Login"/>
 
             </form>
-            <button onClick={logout}>Logout</button>
+            <button>Logout</button>
 
 
 

@@ -32,6 +32,7 @@ export default function Drawing() {
 
     const [state, setstate] = useState({
         Id: "",
+        title:"Test Document 2" ,
         values: [{
             title: "New Section",
             value: [{
@@ -172,6 +173,7 @@ export default function Drawing() {
         
         axios.post('/save', {
             id: state.Id,
+            title: state.title,
             values: state.values,
          })
     }
@@ -324,6 +326,12 @@ export default function Drawing() {
         }
     }
 
+    const handleDocumentTitle = (e) => {
+        console.log(e.target.value)
+
+        setstate({title:e.target.value, Id:state.Id, values:state.values} )
+    }
+
 
 
 
@@ -433,6 +441,8 @@ export default function Drawing() {
             <div className='nav-bar'>
                 <h1 className='title'>Nooto</h1>
                 <h1 className='panel-btn' onClick={()=>retractPanel()}> {`>`} </h1>
+                <h1 className="doc-title">{state.title}</h1>
+
                 <div className='panel-btn edit-btn' onClick={()=>handleRight()}>
                     <h1 className='arrow-btn'> {`<`}</h1>
                     <h1 className='arrow-btn'> {`>`}</h1>
@@ -467,7 +477,7 @@ export default function Drawing() {
 
         <div class="board">
        {state.Id?  <h3>ID is: {state.Id}</h3> : <h3>New Document</h3>}
-       
+       <input onChange={(e)=>handleDocumentTitle(e)}/>
         
 
             {state.values.map((st, index) => (

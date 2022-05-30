@@ -9,6 +9,9 @@ import axios from 'axios';
 import { userContext } from './userContext';
 import Drawing from './drawing';
 import HomePage from './compoents/HomePage';
+import Registration from './compoents/registration';
+import { AuthContext } from './AuthContext';
+import ProtectedRoute from './compoents/ProtectedRoute';
 
 
 
@@ -52,7 +55,7 @@ function App() {
     <Router>
    
    {/*  The <Switch> is not changed to <Routes> for React-router-dom v6 */}   
-   <userContext.Provider value={{auth, setauth}}> 
+   <AuthContext> 
     <Routes>
 
    {/*  No more "exact" attribute and "compoent" attribute is now called "element" 
@@ -64,11 +67,17 @@ function App() {
     <Route path='/' element={<HomePage/>} />
     <Route path="/doc/:id" element={<Drawing/>} />
     <Route path="/login" element={<Login isAuth={auth}/>}/>
-    <Route path="/profile" element={<Profile isAuth={auth} name={auth.name}/>} />
+    <Route path="reg" element={<Registration/>}/>
+    
+    <Route path="/profile" element={
+      <ProtectedRoute>
+        <Profile/>
+      </ProtectedRoute>
+    } />
    
 
   </Routes>
-  </userContext.Provider> 
+  </AuthContext> 
     </Router>
   );
 }
