@@ -17,8 +17,9 @@ export const AuthContext = ({children}) => {
     });
 
 
-    const createUser = (email, password) => {
+    const createUser = (email, password, name) => {
         return createUserWithEmailAndPassword(auth, email, password)
+
     }
 
     const logout = () => {

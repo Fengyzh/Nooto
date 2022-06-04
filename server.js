@@ -198,6 +198,34 @@ app.get("/user/getnooto/:uid", async (req, res) => {
 })
 
 
+app.get("/nooto/newNooto", async (req,res)=>{
+    let note = new noo({
+        title: "New Nooto",
+        values:[{
+            title: "New Section",
+            value: [{
+                text: "good",
+                editable: false
+            },
+            {
+                text: "bye",
+                editable: false
+            }
+                    ],
+
+        }]
+    })
+
+    console.log("Creating new note")
+    
+
+    note.save().then(data => {
+        res.json(data._id)
+    }).catch(err => {
+        res.json("Error")
+    })
+})
+
 
 mongoose.connect('mongodb+srv://Feng:Feng1293875db@cluster0.odbkl.mongodb.net/Nooto?retryWrites=true&w=majority', () => {
     console.log("Conncted To Mongo")

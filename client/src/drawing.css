@@ -44,7 +44,7 @@ html {
 
   .section-containers{
     background-color: white;
-    border: 0.5rem solid gray;
+    border: 5px solid black;
     margin-bottom: 3rem;
     width: 85%;
     display: flex;
@@ -56,21 +56,23 @@ html {
 
 
 .titles{
-  width: 50rem;
+  width: 60rem;
   min-height: 3rem;
-  max-height: 3rem;
-  font-size: 2rem;
+  /*max-height: 5rem;*/
+  height: 5rem;
+  font-size: 4rem;
   font-weight: bold;
   border-radius: 20px;
   border: 3px solid transparent;
   padding: 0 1rem; 
-  line-height: 3rem;
-  margin-bottom: 1rem;
+  line-height: 5rem;
   transition: 0.5s;
   outline: none;
   white-space: normal; 
   resize: none;
   overflow: hidden;
+  white-space: pre-wrap;
+
 }
 
 .titles:focus {
@@ -91,7 +93,8 @@ html {
   border-radius: 20px;
   padding: 20px 20px;
   overflow-wrap: break-word;
-  border: 0.3rem solid black;
+  border: 5px solid black;
+  /*box-shadow: 10px 5px 10px rgb(203, 203, 203);*/
   margin-top: 1rem;
 }
 

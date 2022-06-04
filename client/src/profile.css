@@ -1,0 +1,53 @@
+.profile-Nooto-block{
+    display: block;
+    width: 15rem;
+    height: 5rem;
+    padding-top: 5px;
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none;
+    border: 2px solid grey;
+    color: black;
+    position: relative;
+    overflow: hidden;
+    transition: 0.4s linear;
+}
+.profile-Nooto-block:hover {
+    color:white;
+}
+
+
+.profile-Nooto-block:before {
+    content: '';
+    background: black;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    height: 0%;
+    transition: 0.2s linear;
+    z-index: -1;
+
+  }
+
+
+
+.profile-Nooto-block:hover:before{
+    height: 100%;
+}
+
+.nooto-container{
+    width: 100%;
+    display: flex;
+}
+
+.profile-Nooto-container{
+    margin: 1rem;
+}
+
+.welcome-block{
+    margin: 3rem 0;
+
+    padding: 0 1rem;
+    font-size: 300%;
+}

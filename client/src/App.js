@@ -64,12 +64,11 @@ function App() {
      
          {console.log("Auth: " + auth)}
   
-    <Route path='/' element={<HomePage/>} />
+    <Route path='/home' element={<HomePage/>} />
     <Route path="/doc/:id" element={<Drawing/>} />
     <Route path="/login" element={<Login isAuth={auth}/>}/>
-    <Route path="reg" element={<Registration/>}/>
-    
-    <Route path="/profile" element={
+    <Route path="/reg" element={<Registration/>}/>    
+    <Route path="/" element={
       <ProtectedRoute>
         <Profile/>
       </ProtectedRoute>

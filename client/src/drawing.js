@@ -1,11 +1,21 @@
 import './drawing.css';
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import React from 'react'
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 
+/*
+ TODO:
+    - Make a loading page compoent for when the user is trying to access an non-existent
+    Nooto, it should bring the user to a page saying "Nooto doesn't exist" instead
+    of just redirecting the user back to the profile page
+
+*/
+
+
 export default function Drawing() {
+    let navigate = useNavigate();
 
 /*
     What I did last time:
@@ -29,6 +39,7 @@ export default function Drawing() {
     const [panel, setPanel] = useState(false)
     const [right, setRight] = useState(false)
     const [rightContent, setRightContent] = useState()
+    const [load, setLoad] = useState(true)
 
     const [state, setstate] = useState({
         Id: "",
@@ -99,11 +110,17 @@ export default function Drawing() {
         title[index]["title"] = e.target.value  
         setstate({...state, values:title}) 
         //console.log(state[index])
-        console.log(state)
+        let targetTitle = document.getElementsByClassName("titles")[index];
 
+        if (e.target.value.length < 35) {
+            targetTitle.style.height = "5rem";
+            targetTitle.style.overflow = "hidden";
+                }
+
+        /*
         e.target.style.height = "auto";
         e.target.style.height = e.target.scrollHeight + "px";
-
+        */
     }
 
     function handleEdit(index, vIndex) {
@@ -267,13 +284,16 @@ export default function Drawing() {
 
     const handleTitleExpand = (index, e) => {
         let targetTitle = document.getElementsByClassName("titles")[index];
-        let titleHeight = targetTitle.style.maxHeight;
+        let titleHeight = targetTitle.style.height;
 
         console.log(titleHeight)
         if (titleHeight == "max-content") {
-            targetTitle.style.maxHeight = "3rem";
+            targetTitle.style.height = "5rem";
+            targetTitle.style.overflow = "hidden";
+            targetTitle.scrollTop = 0
         } else {
-            targetTitle.style.maxHeight = "max-content";
+            targetTitle.style.height = "max-content";
+            targetTitle.style.overflow = "scroll";
         }
         //targetTitle.style.height = "auto";
         //targetTitle.style.height = targetTitle.scrollHeight + "px";
@@ -365,10 +385,12 @@ export default function Drawing() {
         axios.get(`/posts/${id}`).then((res) => {
 
             if (res.data != 'Cannot find note') {
-                setstate({Id:res.data._id,values:res.data.values})
-                
+                setstate({Id:res.data._id, title:res.data.title, values:res.data.values})
+                setLoad(!load)
                 console.log(res.data)
-            } 
+            } else {
+                navigate("/")
+            }
         }).then(()=>{
             for (let i = 0; i < state.values.length; i++) {
                 for (let j = 0; j < state.values[i]["value"].length; j++) {
@@ -436,7 +458,8 @@ export default function Drawing() {
         {console.log(state)}
         {/* TEMP FIX, Need a "Loading" indicator when fetching from server
         for now, if the first section is empty, it will say "loading" */}
-        {state.values[0].value?
+        {/*state.values[0].value? */}
+        {!load?
         <div>
             <div className='nav-bar'>
                 <h1 className='title'>Nooto</h1>
@@ -488,7 +511,7 @@ export default function Drawing() {
                 <textarea value={st.title} className="titles" onChange={(e) => handleTitleChange(index, e)}>
                 </textarea>
                 
-                {st.title.length >= 50? 
+                {st.title.length >= 40? 
                 
                 <button className='title-expand-btn' onClick={(e)=>{handleTitleExpand(index,e)}}>
                     Expand Title

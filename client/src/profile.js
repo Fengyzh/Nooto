@@ -4,7 +4,14 @@ import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { userContext } from './userContext';
 import { UserAuth } from './AuthContext';
+import "./profile.css"
 
+
+/*
+    TODO:
+     - Make the Nooto container it's own compoent
+
+*/
 
 export default function Profile() {
 
@@ -42,7 +49,7 @@ export default function Profile() {
         try {
             await logout()
             console.log("logged out")
-            navigate("/")
+            navigate("/home")
         } catch (e) {
             console.log(e.message)
         }
@@ -74,6 +81,14 @@ export default function Profile() {
 
     }
 
+    const handleNewNooto = () => {
+        axios.get('/nooto/newNooto').then(res=>{
+            navigate(`/doc/${res.data}`)
+        })
+
+    }
+
+
 
     useEffect(() => {
         axios.get(`/user/getnooto/${"628d9abc72050685e5766fd6"}`
@@ -96,20 +111,37 @@ export default function Profile() {
 
             
             <div>
+                {/*
             <h1>
                 You are logged in
             </h1>
-            <h2>{currentUser && currentUser.email}</h2>
+    */}
+            
+            <h1 className='welcome-block'> Welcome {currentUser? currentUser.displayName : "User"}</h1>
             
             <button onClick={handleLogout}> Logout </button>
             <button onClick={handleRegTest}> Reg Test</button>
             <button onClick={handleRegCheck}> Reg Check</button>
+            <button onClick={handleNewNooto}> New Nooto </button>
 
 
             <div className='nooto-container'>
             {note? 
                 note.map((value)=>{
-                    return <div> {value.title} </div>
+                    return (
+                    <div className='profile-Nooto-container'> 
+                        
+                        
+                        <a className='profile-Nooto-block' href={`/doc/${value._id}`}>
+                            <div>
+                                <h3>{value.title}</h3>
+                            </div>
+                            
+                            </a> 
+                    
+                    
+                    </div>
+                    )
                 })
                 : "" }
 

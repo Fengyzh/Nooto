@@ -43,7 +43,7 @@ export default function Login({isAuth}) {
     try {
         await login(email, password)
         console.log("logged in")
-        navigate("/profile")
+        navigate("/")
     } catch (err) {
         console.log(err.message)
     }
