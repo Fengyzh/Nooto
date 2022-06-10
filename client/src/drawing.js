@@ -4,6 +4,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import React from 'react'
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
+import { materialOceanic } from 'react-syntax-highlighter/dist/esm/styles/prism'
+
 
 /*
  TODO:
@@ -464,7 +467,7 @@ export default function Drawing() {
             <div className='nav-bar'>
                 <h1 className='title'>Nooto</h1>
                 <h1 className='panel-btn' onClick={()=>retractPanel()}> {`>`} </h1>
-                <h1 className="doc-title">{state.title}</h1>
+                <input className="doc-title" onChange={(e)=>handleDocumentTitle(e)} value={state.title}/>
 
                 <div className='panel-btn edit-btn' onClick={()=>handleRight()}>
                     <h1 className='arrow-btn'> {`<`}</h1>
@@ -547,7 +550,42 @@ export default function Drawing() {
               
                     {/*<h1 className='markdown-title'>Markdown</h1>*/}
                 <div>
-                        <ReactMarkdown children={v.text} className="results"/>
+                        <ReactMarkdown components={{
+                            pre: ({node, ...props}) => 
+                            <div>
+                                <pre {...props}> {props.children}{console.log(props.children[0].props.className)} </pre>
+                            </div>,
+
+                            h1: ({node, ...props}) =>
+                                <h1 style={{lineHeight:"2rem"}}> {props.children} </h1>
+                                ,
+                            code({node, inline, className, children, ...props}) {
+                                    const match = /language-(\w+)/.exec(className || '')
+                                    return !inline && match ? (
+                                        <div style={{position:"relative"}}>
+                                      <SyntaxHighlighter
+                                        children={String(children).replace(/\n$/, '')}
+                                        language={match[1].toLowerCase()}
+                                        style={materialOceanic}
+                                        className="code-highlighter"
+                                        //useInlineStyles={false}
+                                        customStyle={{borderRadius:"15px", margin:"0"}}
+                                        PreTag="div"
+                                        wrapLines={true}
+                                        wrapLongLines={true}
+                                        {...props}
+                                      />
+                                      <p className='language-tag'>{match[1]}</p>
+                                      </div>
+                                    ) : (
+                                      <code className={className} {...props}>
+                                        {children}
+                                      </code>
+                                    )
+                                  }
+                            
+                        }} 
+                        children={v.text} className="results"/>
                 </div>
 
                 

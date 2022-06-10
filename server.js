@@ -118,6 +118,7 @@ app.post('/save', async (req, res) => {
 
     try {
         note = await noo.findById({"_id": req.body.id});
+        note.title = req.body.title
         note.values = req.body.values
     }catch{
         console.log("new note")
