@@ -12,15 +12,14 @@ import HomePage from './compoents/HomePage';
 import Registration from './compoents/registration';
 import { AuthContext } from './AuthContext';
 import ProtectedRoute from './compoents/ProtectedRoute';
+import ForgetPassword from './compoents/ForgetPassword';
+import ResetPassword from './compoents/ResetPassword';
 
 
 
 function App() {
-
-  const [auth, setauth] = useState(false)
   
   //const [title, setTitle] = useState({});
-
 
 
   async function getStuff() {
@@ -28,7 +27,6 @@ function App() {
     await fetch('/auth').then(res => res.json())
     .then(titles => setauth(titles))
 */
-    axios.get('/auth').then(res => setauth(res.data.auth))
     
 
   }
@@ -62,12 +60,20 @@ function App() {
    Also notice the thing inside the {} is different now, its a tag instead of just
    the name*/}
      
-         {console.log("Auth: " + auth)}
   
+   {/**
+    *  TODO:
+    *   - Shoudln't be able to access "Login" when you are authed
+    * 
+    * 
+    */}
+
     <Route path='/home' element={<HomePage/>} />
     <Route path="/doc/:id" element={<Drawing/>} />
-    <Route path="/login" element={<Login isAuth={auth}/>}/>
-    <Route path="/reg" element={<Registration/>}/>    
+    <Route path="/login" element={<Login/>}/>
+    <Route path="/reg" element={<Registration/>}/>   
+    <Route path="/forgetpassword" element={<ForgetPassword/>}/>
+    <Route path="resetpassword" element={<ResetPassword/>}/>
     <Route path="/" element={
       <ProtectedRoute>
         <Profile/>

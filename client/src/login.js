@@ -4,17 +4,20 @@ import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { userContext } from './userContext';
 import { UserAuth } from './AuthContext';
+import { Navigate } from 'react-router-dom'
 
 
 
-export default function Login({isAuth}) {
+
+
+export default function Login() {
     //const {auth, setauth} = useContext(userContext)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
     let navigate = useNavigate();
 
-    const { login, currentUser } = UserAuth()
+    const { login, currentUser, state } = UserAuth()
 
     
   
@@ -31,12 +34,13 @@ export default function Login({isAuth}) {
       
   
     }
+    */
 
-    useEffect(() => {
-        getStuff()
-    
-    }, [])
-*/
+
+
+
+
+
 
  const handleSubmit = async (e) => {
      e.preventDefault()
@@ -49,26 +53,45 @@ export default function Login({isAuth}) {
     }
  }
 
+ const loginPage = (
+
+    <div>
+        <form id="form" onSubmit={(handleSubmit)}>
+
+            <label for="username_field"> Email: </label>
+            <input onChange={(e)=>setEmail(e.target.value)} type="text" id="username_field" name ="username"/>
+
+            <label for="password_field"> Password: </label>
+            <input onChange={(e)=>setPassword(e.target.value)} type="text" id="password_field" name ="password"/>
+
+            <input type="submit" value="Login"/>
+
+        </form>
+        <a href='/forgetPassword'>Forget Password</a>
+        <br/>
+        <a href='/reg'>Register an account</a>
 
 
-    return (
 
-        <div>
-            <form id="form" onSubmit={(handleSubmit)}>
-
-                <label for="username_field"> Email: </label>
-                <input onChange={(e)=>setEmail(e.target.value)} type="text" id="username_field" name ="username"/>
-
-                <label for="password_field"> Password: </label>
-                <input onChange={(e)=>setPassword(e.target.value)} type="text" id="password_field" name ="password"/>
-
-                <input type="submit" value="Login"/>
-
-            </form>
-            <button>Logout</button>
+    </div>
+)
 
 
 
-        </div>
-    )
+ if (state.userDataPresent) {
+    if (state.curuser != null) {
+
+        return <Navigate to='/'/>
+    } else {
+        return loginPage
+    }
+}
+
+
+
+
+ return <h1> Loading </h1>
+
+
+  
 }

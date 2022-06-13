@@ -465,8 +465,10 @@ export default function Drawing() {
         {!load?
         <div>
             <div className='nav-bar'>
+                <div className='nav-title-container'>
                 <h1 className='title'>Nooto</h1>
                 <h1 className='panel-btn' onClick={()=>retractPanel()}> {`>`} </h1>
+                </div>
                 <input className="doc-title" onChange={(e)=>handleDocumentTitle(e)} value={state.title}/>
 
                 <div className='panel-btn edit-btn' onClick={()=>handleRight()}>
@@ -503,7 +505,8 @@ export default function Drawing() {
 
         <div class="board">
        {state.Id?  <h3>ID is: {state.Id}</h3> : <h3>New Document</h3>}
-       <input onChange={(e)=>handleDocumentTitle(e)}/>
+       
+       {/*<input onChange={(e)=>handleDocumentTitle(e)}/>*/}
         
 
             {state.values.map((st, index) => (

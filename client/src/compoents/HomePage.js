@@ -25,7 +25,7 @@ export default function Home() {
       <h2>Enter the Nooto ID</h2>
       <input id="input-field" type="text" placeholder='Enter ID here'/>
       <button onClick={handleRedirect}> Go to this Nooto </button>
-
+      <a href='/login'>Login Page </a>
 
       <p>6241f98cba8bd3aa074e0e49</p>
     </div>

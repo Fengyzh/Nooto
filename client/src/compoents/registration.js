@@ -57,10 +57,10 @@ export default function Registration() {
                 <label for="password_field"> Password: </label>
                 <input required onChange={(e)=>setPassword(e.target.value)} type="text" id="password_field" name ="password"/>
 
-                <input type="submit" value="Login"/>
+                <input type="submit" value="Registra Account"/>
 
             </form>
-            <button>Logout</button>
+            <a href='/login'>Login</a>
 
 
 
