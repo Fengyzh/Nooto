@@ -43,6 +43,7 @@ export default function Drawing() {
     const [right, setRight] = useState(false)
     const [rightContent, setRightContent] = useState()
     const [load, setLoad] = useState(true)
+    const [settingPanel, setSettingPanel] = useState(false)
 
     const [state, setstate] = useState({
         Id: "",
@@ -466,15 +467,38 @@ export default function Drawing() {
         <div>
             <div className='nav-bar'>
                 <div className='nav-title-container'>
-                <h1 className='title'>Nooto</h1>
+                <h1 className='title' style={{cursor: "pointer"}} onClick={()=>navigate("/")}>Nooto</h1>
                 <h1 className='panel-btn' onClick={()=>retractPanel()}> {`>`} </h1>
                 </div>
                 <input className="doc-title" onChange={(e)=>handleDocumentTitle(e)} value={state.title}/>
+                
+                <div className='nav-title-container'>
+                <div className='title'>
+                    <h1 style={{cursor: "pointer"}} onClick={()=>setSettingPanel(!settingPanel)}> O </h1>
+                    {settingPanel?
+                    <div className="setting-panel-container"> 
+                        <div className='setting-panel-title-container'>
+                            <h1 className='setting-panel-title'> Settings </h1>
+                            <h2 className='close-setting-btn' style={{cursor: "pointer"}} onClick={()=>setSettingPanel(!settingPanel)}> X </h2>
+                        </div>
+
+                        <div>
+                            <h3 className='setting-titles'> Title:  </h3>
+                            <textarea value={state.title} className="setting-title-field" onChange={(e) => handleDocumentTitle(e)}/>
+
+                        </div>
+
+                    </div>
+                    : ""}
+
+                </div>
 
                 <div className='panel-btn edit-btn' onClick={()=>handleRight()}>
                     <h1 className='arrow-btn'> {`<`}</h1>
                     <h1 className='arrow-btn'> {`>`}</h1>
                 </div>
+                </div>
+
             </div>
 
 

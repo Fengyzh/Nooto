@@ -343,6 +343,7 @@ pre{
   color: white;
   margin: 0;
   margin-left: 3rem;
+  position: relative;
 }
 
 .edit-btn{
@@ -438,8 +439,54 @@ pre{
 
 .nav-title-container{
   display: flex;
+  align-items: center;
 }
 
+.setting-panel-container{
+  position: absolute;
+  background-color: black;
+  width: 30rem;
+  padding: 0.5rem 2rem;
+  height: 15rem;
+  transform: translateX(-20rem);
+  border-radius: 20px;
+  border: 1px solid transparent;
+}
+
+.setting-title-field{
+  height: 5rem;
+  width: 23rem;
+  resize: none;
+  background-color: rgb(28, 28, 28);
+  color: white;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  font-size: large;
+  margin-top: 0.5rem;
+}
+
+.setting-titles{
+  margin: 0;
+  padding: 0;
+}
+
+.setting-panel-title-container{
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.setting-panel-title{
+  background-color: white;
+  color: black;
+  padding: 0 1rem;
+  border-radius: 20px;
+}
+
+.close-setting-btn{
+  margin-left: auto;
+  margin-right: 5rem;
+}
 
 
 @media only screen and (max-width: 600px) {
