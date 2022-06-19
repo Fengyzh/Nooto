@@ -446,11 +446,12 @@ pre{
   position: absolute;
   background-color: black;
   width: 30rem;
-  padding: 0.5rem 2rem;
+  padding: 0 1rem;
   height: 15rem;
-  transform: translateX(-20rem);
+  transform: translateX(-25rem);
   border-radius: 20px;
   border: 1px solid transparent;
+  overflow: scroll;
 }
 
 .setting-title-field{
@@ -480,12 +481,28 @@ pre{
   background-color: white;
   color: black;
   padding: 0 1rem;
-  border-radius: 20px;
+  border-radius: 10px;
+  font-size: xx-large;
 }
 
 .close-setting-btn{
   margin-left: auto;
-  margin-right: 5rem;
+  margin-right: 2rem;
+}
+
+
+
+.setting-delete-btn{
+  background-color: rgb(255, 72, 72);
+  width: 20rem;
+  border-radius: 10px;
+  text-align: center;
+  border: 2px solid transparent;
+  padding: 0.5rem 0;
+  font-size: larger;
+  color: black;
+  margin-top: 1rem;
+  cursor: pointer;
 }
 
 

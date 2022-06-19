@@ -5,6 +5,8 @@ const mongoose = require('mongoose')
 const notes = require('./notes')
 const noo = require('./newNote')
 const User = require('./User')
+var ObjectId = require('mongodb').ObjectId;
+
 
 const app = express(); 
 const port = 4000; 
@@ -155,7 +157,7 @@ app.post('/userTest', (req,res) => {
     console.log(req.body.Email)
     console.log(req.body.UID)
 
-    /*
+    
         let user = new User({
             Email: req.body.Email,
             UID: req.body.UID,
@@ -163,7 +165,7 @@ app.post('/userTest', (req,res) => {
         })
 
         user.save()
-        */
+        
         
 })
 
@@ -187,19 +189,19 @@ app.get("/userTest/:id", async (req, res)=>{
 
 app.get("/user/getnooto/:uid", async (req, res) => {
     try {
-        const user = await User.findById({"_id": req.params.uid}).populate("Nooto", "title");
+        const user = await User.findOne({"UID": req.params.uid}).populate("Nooto", "title");
         //console.log(note)
         //res.json(note)
         //console.log(user)
         res.json(user)
     } catch (err) {
         //res.json("Cannot find note")
-        console.log("err")
+        console.log("err in getting Nooto")
     }
 })
 
 
-app.get("/nooto/newNooto", async (req,res)=>{
+app.post("/nooto/newNooto", async (req,res)=>{
     let note = new noo({
         title: "New Nooto",
         values:[{
@@ -218,13 +220,59 @@ app.get("/nooto/newNooto", async (req,res)=>{
     })
 
     console.log("Creating new note")
-    
+    const user = await User.findOne({"UID": req.body.UID});
+
 
     note.save().then(data => {
+        console.log("Nooto created and saved")
+        return data
+    }).then((data)=>{
+        user.Nooto.push(note)
+        user.save()
+        console.log(data._id)
         res.json(data._id)
     }).catch(err => {
-        res.json("Error")
+        res.json("Error in creating new Nooto")
     })
+
+    
+
+
+})
+
+
+app.post("/deleteNooto", async (req, res) => {
+    //try {
+    await noo.findById({"_id": req.body.id}).deleteOne();
+    //const nootoDelete = await noo.findById({"_id": req.body.id})
+    //nootoDelete.deleteOne();
+    console.log("req id: " + req.body.id)
+    const user = await User.findOne({"UID": req.body.UID})
+    for (let i = 0; i < user.Nooto.length; i++) {
+        let note = user.Nooto[i]
+        console.log("item " + i + JSON.stringify(note).replace("\"", ""))
+        if (req.body.id == JSON.stringify(note).replace(/\"/g, "")) {
+            console.log(111)
+            let removed = user.Nooto.splice(i,1)
+            console.log("list: "+ user.Nooto)
+            console.log("removed: " + removed)
+        }
+    }
+    user.save()
+
+
+    //console.log(req.body.UID)
+    //user.Nooto = user.Nooto.filter(item => item._id !== req.body.id)
+    //console.log(user)
+    console.log("UID: " + req.body.UID)
+    //await User.updateOne({ "UID": req.body.UID }, {"$pull" : { Nooto : {"_id": req.body.id} }})
+
+    console.log("Nooto Deleted, ID: " + req.body.id)
+    res.json("Nooto Deleted")
+    /*
+    } catch {
+        console.log("Unable to delete Nooto")
+    }*/
 })
 
 

@@ -82,22 +82,29 @@ export default function Profile() {
     }
 
     const handleNewNooto = () => {
-        axios.get('/nooto/newNooto').then(res=>{
+        if (currentUser) {
+        axios.post('/nooto/newNooto', {
+            UID: currentUser.uid
+        }).then(res=>{
+            console.log(res.data)
             navigate(`/doc/${res.data}`)
         })
+    }
 
     }
 
 
 
     useEffect(() => {
-        axios.get(`/user/getnooto/${"628d9abc72050685e5766fd6"}`
+        if (currentUser) {
+        axios.get(`/user/getnooto/${currentUser.uid}`
         ).then (res => {
             console.log("success")
             console.log(res.data)
             setNote(res.data.Nooto)
         })
-    }, [])
+    }
+    }, [currentUser])
     
 
 

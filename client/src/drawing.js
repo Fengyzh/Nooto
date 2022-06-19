@@ -2,6 +2,7 @@ import './drawing.css';
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import React from 'react'
+import { UserAuth } from './AuthContext';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
@@ -38,6 +39,8 @@ export default function Drawing() {
 
 
     let {id} = useParams();
+    const {currentUser, logout} = UserAuth();
+
 
     const [panel, setPanel] = useState(false)
     const [right, setRight] = useState(false)
@@ -358,7 +361,16 @@ export default function Drawing() {
 
 
 
-
+    const handleDeleteNooto = () => {
+        if (currentUser) {
+            axios.post('/deleteNooto', {
+                id: state.Id,
+                UID: currentUser.uid
+            }).then(res=>{
+                navigate("/")
+            })
+        }
+    }
 
 
 
@@ -486,6 +498,12 @@ export default function Drawing() {
                             <h3 className='setting-titles'> Title:  </h3>
                             <textarea value={state.title} className="setting-title-field" onChange={(e) => handleDocumentTitle(e)}/>
 
+                        </div>
+                        
+                        <div>
+                            <div className="setting-delete-nooto">
+                                <button onClick={handleDeleteNooto} className="setting-delete-btn">Delete This Nooto</button>
+                            </div>
                         </div>
 
                     </div>
