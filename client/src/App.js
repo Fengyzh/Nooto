@@ -9,7 +9,7 @@ import axios from 'axios';
 import { userContext } from './userContext';
 import Drawing from './drawing';
 import HomePage from './compoents/HomePage';
-import Registration from './compoents/registration';
+import Registration from './compoents/Registration';
 import { AuthContext } from './AuthContext';
 import ProtectedRoute from './compoents/ProtectedRoute';
 import ForgetPassword from './compoents/ForgetPassword';

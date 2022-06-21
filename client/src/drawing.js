@@ -260,7 +260,7 @@ export default function Drawing() {
         let value = state.values
         value[index]["value"].push({
             text: "New Block",
-            editable: true
+            editable: false
         })
         
         setstate({...state, values: value})
@@ -342,7 +342,7 @@ export default function Drawing() {
 
     
     const EditThis = (index, vIndex) => {
-        let value = [...state.values]
+        //let value = [...state.values]
         //value[index]["value"][vIndex]["editable"] = !value[index]["value"][vIndex]["editable"]
     
         //setstate({...state, values:value})
@@ -372,6 +372,22 @@ export default function Drawing() {
         }
     }
 
+
+    // ------ Util function
+    function swapSection(from, to) {
+        let tempStateValues = state.values
+        let temp = tempStateValues[from]
+        tempStateValues[from] = tempStateValues[to]
+        tempStateValues[to] = temp
+        setstate({title:state.title, Id:state.Id, values:tempStateValues})
+
+        handleScroll(to)
+
+    }
+
+
+    const handleMoveUp = (index) => {
+    }
 
 
 
@@ -407,7 +423,10 @@ export default function Drawing() {
             } else {
                 navigate("/")
             }
-        }).then(()=>{
+        })
+        /*
+        .then(()=>{
+            
             for (let i = 0; i < state.values.length; i++) {
                 for (let j = 0; j < state.values[i]["value"].length; j++) {
                     
@@ -418,9 +437,9 @@ export default function Drawing() {
                     }
                 }
             }
+            
 
-
-            /*
+            
             for (let i = 0; i < state.values.length; i++) {
                 if (state.values[i].edit == false){
                     textFields[i].style.opacity = 0
@@ -436,8 +455,8 @@ export default function Drawing() {
                 textFields[i].style.height = "auto";
                 textFields[i].style.height = textFields[i].scrollHeight + "px"
                 
-            }*/
-        })
+            }
+        })*/
 
     }, [])
     
@@ -493,6 +512,11 @@ export default function Drawing() {
                             <h1 className='setting-panel-title'> Settings </h1>
                             <h2 className='close-setting-btn' style={{cursor: "pointer"}} onClick={()=>setSettingPanel(!settingPanel)}> X </h2>
                         </div>
+                        
+                        <div className='state-id-filed'>
+                        {state.Id?  <h3 className='id-text'>ID: {state.Id}</h3> : <h3>New Document</h3>}
+
+                        </div>
 
                         <div>
                             <h3 className='setting-titles'> Title:  </h3>
@@ -546,13 +570,14 @@ export default function Drawing() {
         
 
         <div class="board">
-       {state.Id?  <h3>ID is: {state.Id}</h3> : <h3>New Document</h3>}
        
        {/*<input onChange={(e)=>handleDocumentTitle(e)}/>*/}
         
 
             {state.values.map((st, index) => (
             <div key={index} className="section-containers">
+                {index > 0? <h1 onClick={() => swapSection(index, index-1)} className='up-btn move-btn'>^</h1> : ""}
+                {index < state.values.length-1? <h1 onClick={()=> swapSection(index, index+1)} className='down-btn move-btn'>v</h1> : ""}
 
                 {/* Title textareas*/}
                 <div className='title-section'>
@@ -585,10 +610,13 @@ export default function Drawing() {
                 <div>
                   {/* style={{display: fieldState? "inline-block" : "none"}} */}
                   {/* Package it into an react comp so it can take values */}   
+
+                {/*
                 <textarea style={{display: v.editable? "block" : "none"}} className={`textarea textarea${index}${vIndex}`} placeholder='Enter text here' value={v.text} onChange={(e) => handleChange(index, e, vIndex)}>
 
 
                 </textarea>
+                */}
                 {/*<h1>{index}</h1>*/}
                 </div>
               
@@ -638,7 +666,7 @@ export default function Drawing() {
                 {/* TODO: Move the "Add Additional Block" out of the loop*/}
 
                 
-                <button class="toggle-btn btn" onClick={() => handleEdit(index, vIndex)}> Toggle Edit </button>
+                {/*<button class="toggle-btn btn" onClick={() => handleEdit(index, vIndex)}> Toggle Edit </button>*/}
                 <button class="delete-btn btn" onClick={() => handleBlockDelete(vIndex, index)}> Delete Block </button>
                 <button class="toggle-btn btn" onClick={() => EditThis(index, vIndex)}>Edit This </button>
 
@@ -682,7 +710,7 @@ export default function Drawing() {
                     {rightContent 
                     
                     ? 
-                    <textarea className='textareaRight' value={state.values[rightContent.index]["value"][rightContent.vIndex]["text"]} onChange={(e) => handleChange(rightContent.index, e, rightContent.vIndex)}>
+                    <textarea className='textareaRight' value={state.values[rightContent.index]? state.values[rightContent.index]["value"][rightContent.vIndex]["text"] : ""} onChange={(e) => handleChange(rightContent.index, e, rightContent.vIndex)}>
                     </textarea>
 
                     : "Not editing any block"}

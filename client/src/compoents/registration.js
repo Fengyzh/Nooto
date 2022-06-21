@@ -3,19 +3,28 @@ import { UserAuth } from '../AuthContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { updateProfile } from 'firebase/auth'
+import { Navigate } from 'react-router-dom'
+import "../compoentStyles/Registration.css"
+
 
 export default function Registration() {
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [name, setName] = useState("")
+  const [alart, setAlert] = useState("")
+  const [valid, setValid] = useState(false)
 
-  const { createUser } = UserAuth()
+  const { createUser, state } = UserAuth()
   const navigate = useNavigate()
 
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!valid) {
+      return
+    }
+
     try{
       
       await createUser(email, password, name).then((res)=>{
@@ -43,27 +52,66 @@ export default function Registration() {
 
   }
 
+  const validateEmail = (email) => {
+    return email.match(
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+  };
 
-  return (
-    <div>
-            <form id="form" onSubmit={handleSubmit}>
-                <h1>Registration Page</h1>
-                <label for="name_field"> Account Name: </label>
-                <input required onChange={(e)=>setName(e.target.value)} type="text" id="name_field" name="name"/>
+  const handleEmail = (e) =>{
+      setEmail(e.target.value)
+      if (validateEmail(e.target.value)) {
+        setAlert("")
+        setValid(true)
+      } else{
+        setAlert("Invalid Email")
+        setValid(false)
+      }
+  }
 
-                <label for="username_field"> Email: </label>
-                <input required onChange={(e)=>setEmail(e.target.value)} type="text" id="username_field" name ="username"/>
 
-                <label for="password_field"> Password: </label>
-                <input required onChange={(e)=>setPassword(e.target.value)} type="text" id="password_field" name ="password"/>
+  const regPage = (
+    
+    <div className='form-container'>
+          <h1 id="reg-background-title">Registration</h1>
 
-                <input type="submit" value="Registra Account"/>
+            <form id="reg-form" onSubmit={handleSubmit}>
+                <h1 id="reg-title">Create An Account</h1>
+                <label className='reg-label' for="name_field"> Account Name: </label>
+                <input className='input-fields' required onChange={(e)=>setName(e.target.value)} type="text" id="name_field" name="name"/>
+
+                <label className='reg-label' for="username_field"> Email: </label>
+                <input className='input-fields' required onChange={(e)=>handleEmail(e)} type="text" id="username_field" name ="username"/>
+
+                <label className='reg-label' for="password_field"> Password: </label>
+                <input className='input-fields' required onChange={(e)=>setPassword(e.target.value)} type="text" id="password_field" name ="password"/>
+
+                <input className='reg-btn' type="submit" value="Registra Account"/>
 
             </form>
-            <a href='/login'>Login</a>
+            <a id="login-btn" href='/login'> Go to Login</a>
+            <h2 className='alert-text'>{alart}</h2>
 
 
 
         </div>
   )
+
+
+  if (state.userDataPresent) {
+    if (state.curuser != null) {
+
+        return <Navigate to='/'/>
+    } else {
+        return regPage
+    }
+}
+
+
+
+
+ return <h1> Loading </h1>
+
+
+
 }

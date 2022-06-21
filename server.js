@@ -161,11 +161,11 @@ app.post('/userTest', (req,res) => {
         let user = new User({
             Email: req.body.Email,
             UID: req.body.UID,
-            Nooto: ["6241f98cba8bd3aa074e0e49"]
+            Nooto: []
         })
 
         user.save()
-        
+    res.json("user created")
         
 })
 
@@ -173,7 +173,9 @@ app.post('/userTest', (req,res) => {
 app.get("/userTest/:id", async (req, res)=>{
 
     try {
-        const user = await User.findById({"_id": req.params.id}).populate("Nooto");
+        //const user = await User.findById({"_id": req.params.id}).populate("Nooto");
+        const user = await User.findOne({"UID": req.params.id});
+
         //console.log(note)
         //res.json(note)
         //console.log(user)
@@ -192,7 +194,7 @@ app.get("/user/getnooto/:uid", async (req, res) => {
         const user = await User.findOne({"UID": req.params.uid}).populate("Nooto", "title");
         //console.log(note)
         //res.json(note)
-        //console.log(user)
+        console.log(user)
         res.json(user)
     } catch (err) {
         //res.json("Cannot find note")

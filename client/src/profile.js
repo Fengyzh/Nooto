@@ -99,9 +99,11 @@ export default function Profile() {
         if (currentUser) {
         axios.get(`/user/getnooto/${currentUser.uid}`
         ).then (res => {
+            if (res && res.data) {
             console.log("success")
             console.log(res.data)
             setNote(res.data.Nooto)
+            }
         })
     }
     }, [currentUser])
@@ -124,7 +126,7 @@ export default function Profile() {
             </h1>
     */}
             
-            <h1 className='welcome-block'> Welcome {currentUser? currentUser.displayName : "User"}</h1>
+            <h1 className='welcome-block'> Welcome {currentUser && currentUser.displayName ? currentUser.displayName : "New User"}</h1>
             
             <button onClick={handleLogout}> Logout </button>
             <button onClick={handleRegTest}> Reg Test</button>
