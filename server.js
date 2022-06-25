@@ -140,7 +140,7 @@ app.post('/save', async (req, res) => {
 })
 
 app.get('/posts/:id', async (req, res) => {
-    console.log("id:" + req.params.id)
+    console.log("Requesting Nooto id:" + req.params.id)
     
     try {
         const note = await noo.findById({"_id": req.params.id});
@@ -194,7 +194,7 @@ app.get("/user/getnooto/:uid", async (req, res) => {
         const user = await User.findOne({"UID": req.params.uid}).populate("Nooto", "title");
         //console.log(note)
         //res.json(note)
-        console.log(user)
+        //console.log(user)
         res.json(user)
     } catch (err) {
         //res.json("Cannot find note")
@@ -204,17 +204,19 @@ app.get("/user/getnooto/:uid", async (req, res) => {
 
 
 app.post("/nooto/newNooto", async (req,res)=>{
+    let date = new Date().toLocaleString()
+
     let note = new noo({
         title: "New Nooto",
+        lastModified: date,
+        createdDate: date,
         values:[{
             title: "New Section",
             value: [{
                 text: "good",
-                editable: false
             },
             {
                 text: "bye",
-                editable: false
             }
                     ],
 

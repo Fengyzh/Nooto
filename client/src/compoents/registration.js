@@ -48,6 +48,7 @@ export default function Registration() {
       
     }catch (e) {
       console.log("Reg Failed", e.message)
+      setAlert("Something went wrong, please try again")
     }
 
   }
@@ -69,28 +70,40 @@ export default function Registration() {
       }
   }
 
+  const handlePassword = (e) => {
+    setPassword(e.target.value)
+    if (e.target.value.length < 8) {
+      setAlert("Password must be 8 or more digits long")
+      setValid(false)
+    } else{
+      setAlert("")
+      setValid(true)
+    }
+
+  }
 
   const regPage = (
     
     <div className='form-container'>
           <h1 id="reg-background-title">Registration</h1>
 
-            <form id="reg-form" onSubmit={handleSubmit}>
-                <h1 id="reg-title">Create An Account</h1>
-                <label className='reg-label' for="name_field"> Account Name: </label>
-                <input className='input-fields' required onChange={(e)=>setName(e.target.value)} type="text" id="name_field" name="name"/>
+            <form className="reg-form" onSubmit={handleSubmit}>
+                <h1 className="reg-title">Create An Account</h1>
+                <h5 className='alert-text'>{alart}</h5>
 
-                <label className='reg-label' for="username_field"> Email: </label>
+                <label className='form-label' for="name_field"> Account Name: </label>
+                <input className='input-fields' required onChange={(e)=>setName(e.target.value)}  type="text" id="name_field" name="name"/>
+
+                <label className='form-label' for="username_field"> Email: </label>
                 <input className='input-fields' required onChange={(e)=>handleEmail(e)} type="text" id="username_field" name ="username"/>
 
-                <label className='reg-label' for="password_field"> Password: </label>
-                <input className='input-fields' required onChange={(e)=>setPassword(e.target.value)} type="text" id="password_field" name ="password"/>
+                <label className='form-label' for="password_field"> Password: </label>
+                <input className='input-fields' required onChange={(e)=>handlePassword(e)} type="password" id="password_field" name ="password"/>
 
                 <input className='reg-btn' type="submit" value="Registra Account"/>
 
             </form>
-            <a id="login-btn" href='/login'> Go to Login</a>
-            <h2 className='alert-text'>{alart}</h2>
+            <a className="login-btn" href='/login'> Go to Login</a>
 
 
 

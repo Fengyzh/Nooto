@@ -537,7 +537,6 @@ pre{
   padding: 0 0.5rem;
   border: 2px solid transparent;
   border-radius: 10px;
-  transform: translateX(-20px);
   cursor: pointer;
   transition: 0.4s;
 }
@@ -548,6 +547,38 @@ pre{
   border-color: black;
 }
 
+.up-btn{
+  transform: translateX(-20px) translateY(0px);
+}
+
+.down-btn{
+  transform: translateX(-20px) translateY(50px);
+
+}
+
+.date-titles{
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.date-text{
+  margin-top: 0;
+  margin-left: -1rem;
+  background-color: rgb(47, 47, 47);
+  width: 100%;
+  padding: 0 1rem;
+  border-radius: 10px;
+}
+
+.date-block-container{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.date-container{
+  text-align: center;
+}
 
 
 @media only screen and (max-width: 600px) {

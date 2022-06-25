@@ -12,7 +12,7 @@
 
 
 
-#reg-form {
+.reg-form {
     z-index: 999;
     display: flex;
     flex-direction: column;
@@ -25,9 +25,10 @@
 
 }
 
-#reg-title{
+.reg-title{
     margin: 0;
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
+    text-align: center;
 }
 
 .input-fields{
@@ -58,6 +59,7 @@
     color: white;
     font-size: larger;
     cursor: pointer;
+    margin-top: 1rem;
     transition: 0.3s;
 }
 
@@ -65,13 +67,13 @@
     background-color: dodgerblue;
 }
 
-.reg-label{
+.form-label{
     font-weight: bold;
     margin-left: -0.5rem;
 
 }
 
-#login-btn{
+.login-btn{
     color: white;
     font-size: medium;
     margin-top: 2rem;
@@ -85,7 +87,7 @@
     z-index: 999;
 }
 
-#login-btn:hover{
+.login-btn:hover{
     background-color: rgb(140, 253, 148);
     color: black;
 }
@@ -102,4 +104,9 @@
     margin: 0;
 }
 
+.alert-text {
+    color: red;
+    text-align: center;
+    margin-top: 0;
+}
 

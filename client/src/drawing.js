@@ -48,18 +48,23 @@ export default function Drawing() {
     const [load, setLoad] = useState(true)
     const [settingPanel, setSettingPanel] = useState(false)
 
+    const [time, setTime] = useState("")
+    const [save, setSave] = useState(false)
+
+
+
     const [state, setstate] = useState({
         Id: "",
         title:"Test Document 2" ,
+        lastModified: "Unavailable",
+        createdDate: "Unavailable",
         values: [{
             title: "New Section",
             value: [{
                 text: "good",
-                editable: false
             },
             {
                 text: "bye",
-                editable: false
             }
                     ],
 
@@ -71,11 +76,9 @@ export default function Drawing() {
         title: "New Section",
         value: [{
             text: "good2",
-            editable: false
         },
         {
             text: "bye2",
-            editable: false
         }
                 ],
 
@@ -86,11 +89,9 @@ export default function Drawing() {
     function handleAdd() {
         setstate({...state,values:[...state.values, {title: "New Section", value:[{
             text: "good2",
-            editable: true
         },
         {
             text: "bye2",
-            editable: false
         }
             ], edit: true}]})
 
@@ -103,6 +104,8 @@ export default function Drawing() {
         setstate({...state,values:value}) //Update the state with the new state
         //console.log(state["values"][index])
         //console.log(state)
+        setSave(true)
+
 
         
         e.target.style.height = "auto";
@@ -123,7 +126,8 @@ export default function Drawing() {
             targetTitle.style.height = "5rem";
             targetTitle.style.overflow = "hidden";
                 }
-
+        
+        setSave(true)
         /*
         e.target.style.height = "auto";
         e.target.style.height = e.target.scrollHeight + "px";
@@ -260,7 +264,6 @@ export default function Drawing() {
         let value = state.values
         value[index]["value"].push({
             text: "New Block",
-            editable: false
         })
         
         setstate({...state, values: value})
@@ -386,12 +389,13 @@ export default function Drawing() {
     }
 
 
-    const handleMoveUp = (index) => {
-    }
+  
 
 
 
     useEffect(() => {
+
+
         /*
         const text = document.querySelectorAll(".textarea");
         for (var i = 0; i < text.length; i++) {
@@ -417,13 +421,23 @@ export default function Drawing() {
         axios.get(`/posts/${id}`).then((res) => {
 
             if (res.data != 'Cannot find note') {
-                setstate({Id:res.data._id, title:res.data.title, values:res.data.values})
+                setstate({Id:res.data._id, 
+                    title:res.data.title,
+                    lastModified: res.data.lastModified,
+                    createdDate: res.data.createdDate, 
+                    values:res.data.values})
                 setLoad(!load)
                 console.log(res.data)
             } else {
+                // TODO: Add Nooto Not found page
+
                 navigate("/")
             }
         })
+
+
+
+
         /*
         .then(()=>{
             
@@ -461,8 +475,8 @@ export default function Drawing() {
     }, [])
     
     useEffect(() => {
-        
-  
+    
+  /*
         for (let i = 0; i < state.values.length; i++) {
             for (let j = 0; j < state.values[i]["value"].length; j++){
                 //if (state.values[i].edit) {
@@ -476,7 +490,7 @@ export default function Drawing() {
                 }
         }
             
-    }
+    }*/
 
     /*
     let text = document.getElementsByClassName("textarea")
@@ -485,12 +499,26 @@ export default function Drawing() {
     }, [])
     
 
+    useEffect(() => {
+        let interval = setInterval(()=>{
+            if (save) {
+                handleSave()
+                setSave(false)
+            }
+        }, 5000)
+    
+      return () => {
+        clearInterval(interval)
+      }
+    }, [save])
+    
+
 
 
     return (
 
     <div className="full">
-        {console.log(state)}
+        {console.log(save)}
         {/* TEMP FIX, Need a "Loading" indicator when fetching from server
         for now, if the first section is empty, it will say "loading" */}
         {/*state.values[0].value? */}
@@ -515,6 +543,17 @@ export default function Drawing() {
                         
                         <div className='state-id-filed'>
                         {state.Id?  <h3 className='id-text'>ID: {state.Id}</h3> : <h3>New Document</h3>}
+                        </div>
+
+                        <div className='date-block-container'>
+                            <div className='date-container'>
+                            <h3 className='date-titles'>Created Date: </h3>
+                            <p className='date-text'>{state.lastModified}</p>
+                            </div>
+                            <div className='date-container'>
+                            <h3 className='date-titles'>Last lastModified: </h3>
+                            <p className='date-text'>{state.lastModified}</p>
+                            </div>
 
                         </div>
 
@@ -570,7 +609,7 @@ export default function Drawing() {
         
 
         <div class="board">
-       
+       <h2>{time}</h2>
        {/*<input onChange={(e)=>handleDocumentTitle(e)}/>*/}
         
 
@@ -603,7 +642,7 @@ export default function Drawing() {
                 
 
                 <div className='block-container'>
-                <h2 className='mode-title'> {v.editable?"Edit Mode":"Markdown Mode"} </h2>
+                <h2 className='mode-title'> {"Markdown Mode"} </h2>
                 {/*v.editable?*/}
 
                 

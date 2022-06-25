@@ -38,17 +38,18 @@ export default function ResetPassword() {
 
 
   return (
-    <div>
+    <div className='form-container'>
         
-        <h1>
+
+        <form className='reg-form' id="form" onSubmit={(e) => handleResetPassword(e)}>
+        <h1 className='login-title'>
             Reset Password
         </h1>
-        <form id="form" onSubmit={(e) => handleResetPassword(e)}>
-            <p>- Enter the new password -</p>
-            <label for="rp-password"> New Password: </label>
-            <input onChange={(e)=>setNewPassword(e.target.value)} type="text" id="rp-password" name ="password"/>
+            
+            <label className='form-label' for="rp-password"> New Password: </label>
+            <input className='input-fields' onChange={(e)=>setNewPassword(e.target.value)} type="password" id="rp-password" name ="password"/>
 
-            <input type="submit" value="Confirm"/>
+            <input className='login-btn' type="submit" value="Confirm"/>
 
         </form>
         

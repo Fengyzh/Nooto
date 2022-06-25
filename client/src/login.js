@@ -5,6 +5,7 @@ import axios from 'axios';
 import { userContext } from './userContext';
 import { UserAuth } from './AuthContext';
 import { Navigate } from 'react-router-dom'
+import "./compoentStyles/Login.css"
 
 
 
@@ -55,22 +56,23 @@ export default function Login() {
 
  const loginPage = (
 
-    <div>
-        <form id="form" onSubmit={(handleSubmit)}>
+    <div className='form-container'>
+        <form className='reg-form' id="form" onSubmit={(handleSubmit)}>
+            <h1 className="login-title">Login Account</h1>
 
-            <label for="username_field"> Email: </label>
-            <input onChange={(e)=>setEmail(e.target.value)} type="text" id="username_field" name ="username"/>
+            <label className='reg-label' for="username_field"> Email: </label>
+            <input className='input-fields' onChange={(e)=>setEmail(e.target.value)} type="text" id="username_field" name ="username"/>
 
-            <label for="password_field"> Password: </label>
-            <input onChange={(e)=>setPassword(e.target.value)} type="text" id="password_field" name ="password"/>
+            <label className='reg-label' for="password_field"> Password: </label>
+            <input className='input-fields' onChange={(e)=>setPassword(e.target.value)} type="password" id="password_field" name ="password"/>
 
-            <input type="submit" value="Login"/>
+            <input className='login-btn' type="submit" value="Login"/>
 
         </form>
-        <a href='/forgetPassword'>Forget Password</a>
-        <br/>
-        <a href='/reg'>Register an account</a>
-
+        <div className='extra-links-container'>
+            <a className='link-btn forget-pass-link' href='/forgetPassword'>Forget Password</a>
+            <a className='link-btn reg-account-link' href='/reg'>Register an account</a>
+        </div>
 
 
     </div>
