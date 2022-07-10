@@ -51,6 +51,7 @@ export default function Drawing() {
     const [time, setTime] = useState("")
     const [save, setSave] = useState(false)
 
+    let currentState = useRef(0);
 
 
     const [state, setstate] = useState({
@@ -86,6 +87,7 @@ export default function Drawing() {
 
 ]})
 
+
     function handleAdd() {
         setstate({...state,values:[...state.values, {title: "New Section", value:[{
             text: "good2",
@@ -97,6 +99,7 @@ export default function Drawing() {
 
 
     }
+
 
     function handleChange(index, e, vIndex) {
         const value = [...state.values]    //Spread the state into individual array elements
@@ -134,13 +137,14 @@ export default function Drawing() {
         */
     }
 
+    /*
     function handleEdit(index, vIndex) {
         let value = [...state.values]    
         //value[index]["edit"] = !value[index]["edit"]
         value[index]["value"][vIndex]["editable"] = !value[index]["value"][vIndex]["editable"]
         setstate({...state, values:value})
         setRightContent({index:index, vIndex:vIndex})
-
+        */
         /*
         for (let i = 0; i < state.values[index]["value"].length; i++) {
             if (state.values[index]["value"]["editable"] && i != vIndex) {
@@ -172,8 +176,9 @@ export default function Drawing() {
             markdownField.style.display = "none"
         }
 */
-    }
+    //}
 
+    /*
     function handleCloseAll() {
         const value = [...state.values]
         for (var i = 0; i < state.values.length; i++) {
@@ -181,7 +186,7 @@ export default function Drawing() {
             setstate({values:value})
         }
     }
-
+*/
 
     function handleDelete(index) {
         console.log("index: " + index)
@@ -197,13 +202,19 @@ export default function Drawing() {
 
     const handleSave = () => {
         console.log("saved...")
-        console.log(state.Id)
+        console.log(currentState.current)
         
+        let date = new Date().toLocaleString()
+        
+
         axios.post('/save', {
-            id: state.Id,
-            title: state.title,
-            values: state.values,
+            id: currentState.current.Id,
+            title: currentState.current.title,
+            values: currentState.current.values,
+            lastModified: date
          })
+
+
     }
 
 
@@ -357,9 +368,12 @@ export default function Drawing() {
     }
 
     const handleDocumentTitle = (e) => {
-        console.log(e.target.value)
+        //console.log(e.target.value)
+        const val = e.target.value
+        setstate({...state, title:val})
+        console.log(state)
 
-        setstate({title:e.target.value, Id:state.Id, values:state.values} )
+        setSave(true)
     }
 
 
@@ -382,10 +396,11 @@ export default function Drawing() {
         let temp = tempStateValues[from]
         tempStateValues[from] = tempStateValues[to]
         tempStateValues[to] = temp
-        setstate({title:state.title, Id:state.Id, values:tempStateValues})
+        setstate({...state, values:tempStateValues})
 
         handleScroll(to)
 
+        setSave(true)
     }
 
 
@@ -472,10 +487,12 @@ export default function Drawing() {
             }
         })*/
 
+
     }, [])
     
     useEffect(() => {
-    
+    currentState.current = state
+    console.log(currentState.current)
   /*
         for (let i = 0; i < state.values.length; i++) {
             for (let j = 0; j < state.values[i]["value"].length; j++){
@@ -496,19 +513,24 @@ export default function Drawing() {
     let text = document.getElementsByClassName("textarea")
     console.log(text)
     */
-    }, [])
+    }, [state])
     
 
     useEffect(() => {
         let interval = setInterval(()=>{
-            if (save) {
-                handleSave()
+        if (save) {
+
                 setSave(false)
+                handleSave()
+                //document.getElementsByClassName("save-btn")[0].click();
             }
         }, 5000)
-    
+
+
+
+
       return () => {
-        clearInterval(interval)
+        clearInterval(interval);
       }
     }, [save])
     
@@ -548,7 +570,7 @@ export default function Drawing() {
                         <div className='date-block-container'>
                             <div className='date-container'>
                             <h3 className='date-titles'>Created Date: </h3>
-                            <p className='date-text'>{state.lastModified}</p>
+                            <p className='date-text'>{state.createdDate}</p>
                             </div>
                             <div className='date-container'>
                             <h3 className='date-titles'>Last lastModified: </h3>
@@ -635,7 +657,6 @@ export default function Drawing() {
                 <button onClick={()=>handleTitleExpand(index)} className="expand-btn">Expand</button>*/}
 
 
-                {console.log(st.edit)}
 
                 {st.value.map((v,vIndex) => (
                     
@@ -643,7 +664,6 @@ export default function Drawing() {
 
                 <div className='block-container'>
                 <h2 className='mode-title'> {"Markdown Mode"} </h2>
-                {/*v.editable?*/}
 
                 
                 <div>

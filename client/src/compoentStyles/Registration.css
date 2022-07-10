@@ -93,7 +93,7 @@
 }
 
 
-#reg-background-title{
+.reg-background-title{
     position: absolute;
     width: 8vw;
     transform: translateX(-8rem) translateY(-5rem) scale(900%);

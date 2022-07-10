@@ -85,7 +85,7 @@ export default function Registration() {
   const regPage = (
     
     <div className='form-container'>
-          <h1 id="reg-background-title">Registration</h1>
+          <h1 className="reg-background-title">Registration</h1>
 
             <form className="reg-form" onSubmit={handleSubmit}>
                 <h1 className="reg-title">Create An Account</h1>

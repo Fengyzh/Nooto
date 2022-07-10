@@ -108,7 +108,8 @@ app.post('/save', async (req, res) => {
 
     let note = new noo({
         title: req.body.title,
-        values: req.body.values
+        values: req.body.values,
+        lastModified: req.body.lastModified,
     })
 /*
     try {
@@ -122,6 +123,7 @@ app.post('/save', async (req, res) => {
         note = await noo.findById({"_id": req.body.id});
         note.title = req.body.title
         note.values = req.body.values
+        note.lastModified = req.body.lastModified
     }catch{
         console.log("new note")
     }
@@ -224,6 +226,7 @@ app.post("/nooto/newNooto", async (req,res)=>{
     })
 
     console.log("Creating new note")
+
     const user = await User.findOne({"UID": req.body.UID});
 
 

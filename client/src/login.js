@@ -57,6 +57,8 @@ export default function Login() {
  const loginPage = (
 
     <div className='form-container'>
+        <h1 className="reg-background-title">Login</h1>
+
         <form className='reg-form' id="form" onSubmit={(handleSubmit)}>
             <h1 className="login-title">Login Account</h1>
 
