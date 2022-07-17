@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import { materialOceanic } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import NotFoundPage from './compoents/NotFoundPage';
 
 
 /*
@@ -46,6 +47,7 @@ export default function Drawing() {
     const [right, setRight] = useState(false)
     const [rightContent, setRightContent] = useState()
     const [load, setLoad] = useState(true)
+    const [fail, setFail] = useState(false)
     const [settingPanel, setSettingPanel] = useState(false)
 
     const [time, setTime] = useState("")
@@ -444,9 +446,11 @@ export default function Drawing() {
                 setLoad(!load)
                 console.log(res.data)
             } else {
+                setLoad(false)
+                setFail(true)
                 // TODO: Add Nooto Not found page
-
-                navigate("/")
+                
+                //navigate("/")
             }
         })
 
@@ -536,10 +540,10 @@ export default function Drawing() {
     
 
 
-
-    return (
+    let pg = (
 
     <div className="full">
+
         {console.log(save)}
         {/* TEMP FIX, Need a "Loading" indicator when fetching from server
         for now, if the first section is empty, it will say "loading" */}
@@ -780,6 +784,10 @@ export default function Drawing() {
             </div>
             </div>
             : "Loading"}
+                    
         </div>
     )
+    if (fail) {return <NotFoundPage/>} else {return pg}
+
 }
+

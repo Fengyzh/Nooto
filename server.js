@@ -149,6 +149,7 @@ app.get('/posts/:id', async (req, res) => {
         //console.log(note)
         res.json(note)
     } catch (err) {
+        console.log(222)
         res.json("Cannot find note")
     }
 })

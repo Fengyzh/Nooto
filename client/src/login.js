@@ -15,10 +15,12 @@ export default function Login() {
     //const {auth, setauth} = useContext(userContext)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [msg, setMsg] = useState("")
 
     let navigate = useNavigate();
 
     const { login, currentUser, state } = UserAuth()
+
 
     
   
@@ -51,6 +53,11 @@ export default function Login() {
         navigate("/")
     } catch (err) {
         console.log(err.message)
+        if (err.message.includes("password") || err.message.includes("email")) {
+         setMsg("Invalid username or password")
+        } else {
+            setMsg("Error trying to login, please try again")
+        }
     }
  }
 
@@ -61,6 +68,8 @@ export default function Login() {
 
         <form className='reg-form' id="form" onSubmit={(handleSubmit)}>
             <h1 className="login-title">Login Account</h1>
+            <h3 className='err-msg'>{msg}</h3>
+
 
             <label className='reg-label' for="username_field"> Email: </label>
             <input className='input-fields' onChange={(e)=>setEmail(e.target.value)} type="text" id="username_field" name ="username"/>
