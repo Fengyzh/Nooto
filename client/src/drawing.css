@@ -349,9 +349,11 @@ pre{
 .title{
   color: white;
   margin: 0;
-  margin-left: 3rem;
+  margin-left: 1rem;
   position: relative;
+
 }
+
 
 .edit-btn{
  /* margin-left: auto;*/
@@ -455,14 +457,18 @@ pre{
   width: 30rem;
   padding: 0 1.5rem;
   height: 15rem;
-  transform: translateX(-25rem);
+  transform: translateX(-26rem);
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px ;
-  border: 1px solid transparent;
+  border-left: 1rem solid transparent;
+  border-right: 1rem solid transparent;
+  border-top: 2rem solid transparent;
+  border-bottom: 2rem solid transparent;
   box-shadow: 0px 0px 15px rgb(29, 29, 29);
   -ms-overflow-style: none; /* for Internet Explorer, Edge */
   scrollbar-width: none; /* for Firefox */
   overflow-y:auto; 
+  transition: 0.3s ease-out;
   
 
 }
@@ -502,6 +508,7 @@ pre{
 .close-setting-btn{
   margin-left: auto;
   margin-right: 1rem;
+  color: white;
 }
 
 
@@ -522,7 +529,6 @@ pre{
 
 .id-text{
   margin-top: 0;
-  margin-left: -1rem;
   background-color: rgb(47, 47, 47);
   width: 70%;
   padding-left: 1rem;
@@ -572,12 +578,101 @@ pre{
 
 .date-block-container{
   display: flex;
-  width: 100%;
+  width: 90%;
+  margin-left: 1rem;
   justify-content: space-between;
 }
 
 .date-container{
   text-align: center;
+}
+
+.share-btn{
+  color: white;
+}
+
+.share-panel-container{
+  position: absolute;
+  background-color: black;
+  width: 30rem;
+  padding: 0 1.5rem;
+  height: 15rem;
+  transform: translateX(-23rem);
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px ;
+  border-left: 1rem solid transparent;
+  border-right: 1rem solid transparent;
+  border-top: 2rem solid transparent;
+  border-bottom: 2rem solid transparent;
+  box-shadow: 0px 0px 15px rgb(29, 29, 29);
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+  overflow-y:auto; 
+  transition: 0.3s ease-out;
+  overflow-x: hidden;
+}
+
+.share-add-section{
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+
+.share-field{
+  width: 80%;
+  color: white;
+  font-size: large;
+  padding: 0 1rem;
+  height: 1.5rem;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  background-color: rgb(47, 47, 47);
+  transition: 0.3s ease-in;
+
+}
+
+.share-field:focus{
+  background-color: rgb(58, 58, 58);
+
+}
+
+
+.share-add-btn{
+  width: 10rem;
+  margin-top: 1rem;
+  background-color: dodgerblue;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  color:white;
+  font-size: large;
+  cursor: pointer;
+  transition: 0.2s ease-in;
+}
+
+.share-add-btn:hover{
+  background-color: rgb(7, 131, 255);
+
+}
+
+.share-titles{
+  margin: 0;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.share-users-container {
+  display: flex;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.share-card{
+  margin-left: 1rem;
+}
+
+.share-card:first-child {
+  margin: 0;
 }
 
 

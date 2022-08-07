@@ -99,6 +99,8 @@ app.get('/logout', (req, res) => {
 app.post('/save', async (req, res) => {
 
     console.log("save....")
+    var ObjectId = mongoose.Types.ObjectId
+
     //console.log(req.body.values)
     /*
     let note = new notes({
@@ -110,6 +112,7 @@ app.post('/save', async (req, res) => {
         title: req.body.title,
         values: req.body.values,
         lastModified: req.body.lastModified,
+        share: req.body.share
     })
 /*
     try {
@@ -119,14 +122,46 @@ app.post('/save', async (req, res) => {
         console.log("new note")
     }*/
 
-    try {
+    //try {
         note = await noo.findById({"_id": req.body.id});
         note.title = req.body.title
         note.values = req.body.values
         note.lastModified = req.body.lastModified
-    }catch{
-        console.log("new note")
-    }
+        note.share = req.body.share
+
+        console.log(req.body.share)
+        //console.log("string: " + note.toString())
+
+        for(let i = 0; i < note.share.length; i++) {
+            console.log("inLoop: " + req.body.share[i])
+            //console.log(ObjectId(req.body.id))
+
+            usr = await User.findOne({UID: note.share[i]})
+            //console.log("xxx: " + usr.Nooto[0].toString())
+
+            if (usr) {
+
+                let result = usr.Nooto.filter((value) => 
+                    {
+                    console.log(value.toString())
+                    value.toString() == req.body.id
+                    }
+                               
+                )
+
+                if (result.length == 0) {
+                    console.log("adding to user: " + usr.UID)
+                    usr.Nooto.push(ObjectId(req.body.id))
+                    usr.save()
+                }
+            }
+            
+        }
+
+
+    //}catch{
+      //  console.log("new note")
+    //}
 
     /*
     const noteSave = new notes({
@@ -141,6 +176,7 @@ app.post('/save', async (req, res) => {
 
 })
 
+/*
 app.get('/posts/:id', async (req, res) => {
     console.log("Requesting Nooto id:" + req.params.id)
     
@@ -150,9 +186,28 @@ app.get('/posts/:id', async (req, res) => {
         res.json(note)
     } catch (err) {
         console.log(222)
-        res.json("Cannot find note")
+        res.json("Error")
     }
 })
+*/
+app.post('/posts', async (req, res) => {
+    console.log("Requesting Nooto id:" + req.body.NootoID)
+    console.log("owner: " + req.body.UID)
+    
+    try {
+        const note = await noo.findById({"_id": req.body.NootoID});
+        if (note.owner === req.body.UID || note.share.includes(req.body.UID)) {
+            res.json({note, state:"Pass"})
+        } else {
+            res.json({state: "No Permission"})
+        }
+        //console.log(note)
+    } catch (err) {
+        console.log(222)
+        res.json({state: "Error"})
+    }
+})
+
 
 app.post('/userTest', (req,res) => {
     console.log("Saving User")
@@ -164,6 +219,7 @@ app.post('/userTest', (req,res) => {
         let user = new User({
             Email: req.body.Email,
             UID: req.body.UID,
+            Name: req.body.Name,
             Nooto: []
         })
 
@@ -193,17 +249,53 @@ app.get("/userTest/:id", async (req, res)=>{
 
 
 app.get("/user/getnooto/:uid", async (req, res) => {
-    try {
-        const user = await User.findOne({"UID": req.params.uid}).populate("Nooto", "title");
+        const user = await User.findOne({"UID": req.params.uid});
+        const available = await User.findOne({"UID": req.params.uid}).populate("Nooto", "title");
+
+        let availableList = []
+    for (let j = 0; j < available.Nooto.length; j++) {
+        availableList.push(JSON.stringify(available.Nooto[j]._id).replace(/\"/g, ""))
+        console.log(available.Nooto[j]._id)
+    }
         //console.log(note)
         //res.json(note)
-        //console.log(user)
-        res.json(user)
-    } catch (err) {
-        //res.json("Cannot find note")
-        console.log("err in getting Nooto")
-    }
+        for (let i = 0; i < user.Nooto.length; i++) {
+            let note = user.Nooto[i]
+            console.log("Note" + note)
+        }
+
+        clearnNooto(user, user.Nooto, availableList)
+        //console.log(available)
+        res.json(available)
+
 })
+
+// ----- Util Function ----- //
+
+function clearnNooto(user, fullList, availableList) {
+    //console.log(fullList)
+    //console.log(availableList)
+    const difference = fullList.filter(item => !availableList.includes(JSON.stringify(item).replace(/\"/g, "")))
+    const indexList = []
+    for (let j = 0; j < difference.length; j++) {
+        indexList.push(fullList.indexOf(difference[j]))
+     }
+     console.log(difference)
+     console.log(indexList)
+
+    let diff = 0
+    for (let i = 0; i < indexList.length; i++) {
+
+            let removed = user.Nooto.splice(indexList[i] - diff,1)
+            console.log("list: "+ user.Nooto)
+            console.log("removed: " + removed)
+            diff += 1
+    }
+    user.save()
+    
+}
+
+
 
 
 app.post("/nooto/newNooto", async (req,res)=>{
@@ -213,6 +305,8 @@ app.post("/nooto/newNooto", async (req,res)=>{
         title: "New Nooto",
         lastModified: date,
         createdDate: date,
+        owner: req.body.UID,
+        share: [],
         values:[{
             title: "New Section",
             value: [{

@@ -14,6 +14,7 @@ import { AuthContext } from './AuthContext';
 import ProtectedRoute from './compoents/ProtectedRoute';
 import ForgetPassword from './compoents/ForgetPassword';
 import ResetPassword from './compoents/ResetPassword';
+import { EditorContext } from './EditorContext';
 
 
 
@@ -54,6 +55,7 @@ function App() {
    
    {/*  The <Switch> is not changed to <Routes> for React-router-dom v6 */}   
    <AuthContext> 
+  <EditorContext>
     <Routes>
 
    {/*  No more "exact" attribute and "compoent" attribute is now called "element" 
@@ -82,6 +84,7 @@ function App() {
    
 
   </Routes>
+  </EditorContext>
   </AuthContext> 
     </Router>
   );

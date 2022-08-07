@@ -35,7 +35,8 @@ export default function Registration() {
         
         axios.post('/userTest', {
           UID: res.user.uid,
-          Email: res.user.email
+          Email: res.user.email,
+          Name: name
         })
         .then(function (response) {
           console.log(response);

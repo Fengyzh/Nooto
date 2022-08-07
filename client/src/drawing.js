@@ -1,5 +1,5 @@
 import './drawing.css';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import React from 'react'
 import { UserAuth } from './AuthContext';
@@ -8,6 +8,9 @@ import axios from 'axios';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import { materialOceanic } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import NotFoundPage from './compoents/NotFoundPage';
+import NoPermissionPage from './compoents/NoPermissionPage';
+import { BoardEditingContext } from './EditorContext';
+import SectionContainers from './compoents/SectionContainers';
 
 
 /*
@@ -21,6 +24,7 @@ import NotFoundPage from './compoents/NotFoundPage';
 
 export default function Drawing() {
     let navigate = useNavigate();
+    let {state, setstate} = BoardEditingContext()
 
 /*
     What I did last time:
@@ -47,15 +51,17 @@ export default function Drawing() {
     const [right, setRight] = useState(false)
     const [rightContent, setRightContent] = useState()
     const [load, setLoad] = useState(true)
-    const [fail, setFail] = useState(false)
+    const [fail, setFail] = useState("Pass")
     const [settingPanel, setSettingPanel] = useState(false)
+    const [sharePanel, setSharePanel] = useState(true)
+
 
     const [time, setTime] = useState("")
     const [save, setSave] = useState(false)
 
     let currentState = useRef(0);
 
-
+/*
     const [state, setstate] = useState({
         Id: "",
         title:"Test Document 2" ,
@@ -88,7 +94,7 @@ export default function Drawing() {
     }
 
 ]})
-
+*/
 
     function handleAdd() {
         setstate({...state,values:[...state.values, {title: "New Section", value:[{
@@ -213,7 +219,8 @@ export default function Drawing() {
             id: currentState.current.Id,
             title: currentState.current.title,
             values: currentState.current.values,
-            lastModified: date
+            lastModified: date,
+            share: currentState.current.share
          })
 
 
@@ -405,8 +412,32 @@ export default function Drawing() {
         setSave(true)
     }
 
+    const handleSettingPanel = () => {
+        setSettingPanel(!settingPanel)
+        let panel = document.getElementsByClassName("setting-panel-container")[0]
 
+/*
+        if (!settingPanel) {
+            panel.style.transform= "translateX(-25rem)"
+        } else {
+            panel.style.transform= "translateX(0rem)"
+
+        }
+        */
+    }
+
+    const handleAddShare = () => {
+        let field = document.getElementsByClassName("share-field")[0].value
+        let newShareValue = currentState.current.share
+        newShareValue.push(field)
+        setstate({...state, share:newShareValue})
+    }
   
+
+    const handleSharePanel = () => {
+        setSettingPanel(false)
+        setSharePanel(!sharePanel)
+    }
 
 
 
@@ -432,28 +463,63 @@ export default function Drawing() {
         let markdownFields = document.getElementsByClassName("results");
         let textFields = document.getElementsByClassName("textarea");
 
-    
+        if (currentUser) {
+            axios.post('/posts', {
+                UID: currentUser.uid,
+                NootoID: id
+            })
+            .then((res) => {
+                console.log(res.data.note)
+                if (res.data.state === 'Pass') {
+                    let data = res.data.note
+                    setstate({Id:data._id, 
+                        title:data.title,
+                        lastModified: data.lastModified,
+                        createdDate: data.createdDate,
+                        owner: data.owner,
+                        share: data.share,
+                        values:data.values})
+                    setLoad(!load)
+                    console.log(res.data)
+                } 
+                else if (res.data.state === "No Permission") {
+                    setLoad(false)
+                    setFail("No Permission")
+                }
+                else {
+                    setLoad(false)
+                    setFail("Error")
+                // TODO: Make this a post and let the server decide whether the current user has permission
+                // If not, return 'Error', else return the data
+                
+                //navigate("/")
+                     }
+          })
+        }
 
-
+/*
         axios.get(`/posts/${id}`).then((res) => {
 
-            if (res.data != 'Cannot find note') {
+            if (res.data != 'Error') {
                 setstate({Id:res.data._id, 
                     title:res.data.title,
                     lastModified: res.data.lastModified,
-                    createdDate: res.data.createdDate, 
+                    createdDate: res.data.createdDate,
+                    owner: res.data.owner,
+                    share: res.data.share,
                     values:res.data.values})
                 setLoad(!load)
                 console.log(res.data)
             } else {
                 setLoad(false)
-                setFail(true)
-                // TODO: Add Nooto Not found page
+                setFail("Error")
+                // TODO: Make this a post and let the server decide whether the current user has permission
+                // If not, return 'Error', else return the data
                 
                 //navigate("/")
             }
         })
-
+*/
 
 
 
@@ -492,11 +558,10 @@ export default function Drawing() {
         })*/
 
 
-    }, [])
+    }, [currentUser])
     
     useEffect(() => {
     currentState.current = state
-    console.log(currentState.current)
   /*
         for (let i = 0; i < state.values.length; i++) {
             for (let j = 0; j < state.values[i]["value"].length; j++){
@@ -558,8 +623,53 @@ export default function Drawing() {
                 <input className="doc-title" onChange={(e)=>handleDocumentTitle(e)} value={state.title}/>
                 
                 <div className='nav-title-container'>
+
+                <div className='share'> 
+                    <h1 className="share-btn" style={{cursor: "pointer"}} onClick={()=>handleSharePanel()}>^^</h1>
+
+                    {sharePanel? 
+                    
+                    <div className="share-panel-container"> 
+                        <div className='setting-panel-title-container'>
+                            <h1 className='setting-panel-title'> Sharing </h1>
+                            <h2 className='close-setting-btn' style={{cursor: "pointer"}} onClick={()=>setSharePanel(!sharePanel)}> X </h2>
+                        </div>
+                        <p style={{color: "white"}}> Owner {state.owner}</p>
+                        <p style={{color: "white"}}> Scroll to see more {`->`}</p>
+                        <div className='share-users-container'>
+                            
+                            {state.share && state.share.map((v)=>{
+
+                                // TODO: Make this into a comp
+                                return (
+                                <div className='share-card'>
+                                    <p className='share-id' style={{color: "white"}}>ID: {v}</p>
+                                    
+                                </div>)
+                            })}
+
+                        </div>
+                    
+                        <div className='share-add-section'>
+                            <h3 className='share-titles'>Add user to this Nooto</h3>
+                            <input className='share-field' type="text"/>
+                            <button onClick={handleAddShare} className='share-add-btn'> Add User</button>
+
+
+                        </div>
+
+
+
+                </div>
+                
+                
+                : ""}
+                </div>
+
+                
                 <div className='title'>
-                    <h1 style={{cursor: "pointer"}} onClick={()=>setSettingPanel(!settingPanel)}> O </h1>
+                    <h1 style={{cursor: "pointer"}} onClick={()=>handleSettingPanel()}> O </h1>
+ 
                     {settingPanel?
                     <div className="setting-panel-container"> 
                         <div className='setting-panel-title-container'>
@@ -596,9 +706,11 @@ export default function Drawing() {
                         </div>
 
                     </div>
-                    : ""}
+                                    : ""}
+
 
                 </div>
+
 
                 <div className='panel-btn edit-btn' onClick={()=>handleRight()}>
                     <h1 className='arrow-btn'> {`<`}</h1>
@@ -640,108 +752,9 @@ export default function Drawing() {
         
 
             {state.values.map((st, index) => (
-            <div key={index} className="section-containers">
-                {index > 0? <h1 onClick={() => swapSection(index, index-1)} className='up-btn move-btn'>^</h1> : ""}
-                {index < state.values.length-1? <h1 onClick={()=> swapSection(index, index+1)} className='down-btn move-btn'>v</h1> : ""}
 
-                {/* Title textareas*/}
-                <div className='title-section'>
-                <textarea value={st.title} className="titles" onChange={(e) => handleTitleChange(index, e)}>
-                </textarea>
-                
-                {st.title.length >= 40? 
-                
-                <button className='title-expand-btn' onClick={(e)=>{handleTitleExpand(index,e)}}>
-                    Expand Title
-                </button>
-                
-                :""}
-                </div>
-                {/*
-                <button onClick={()=>handleTitleExpand(index)} className="expand-btn">Expand</button>*/}
-
-
-
-                {st.value.map((v,vIndex) => (
-                    
-                
-
-                <div className='block-container'>
-                <h2 className='mode-title'> {"Markdown Mode"} </h2>
-
-                
-                <div>
-                  {/* style={{display: fieldState? "inline-block" : "none"}} */}
-                  {/* Package it into an react comp so it can take values */}   
-
-                {/*
-                <textarea style={{display: v.editable? "block" : "none"}} className={`textarea textarea${index}${vIndex}`} placeholder='Enter text here' value={v.text} onChange={(e) => handleChange(index, e, vIndex)}>
-
-
-                </textarea>
-                */}
-                {/*<h1>{index}</h1>*/}
-                </div>
-              
-              
-                    {/*<h1 className='markdown-title'>Markdown</h1>*/}
-                <div>
-                        <ReactMarkdown components={{
-                            pre: ({node, ...props}) => 
-                            <div>
-                                <pre {...props}> {props.children}{console.log(props.children[0].props.className)} </pre>
-                            </div>,
-
-                            h1: ({node, ...props}) =>
-                                <h1 style={{lineHeight:"2rem"}}> {props.children} </h1>
-                                ,
-                            code({node, inline, className, children, ...props}) {
-                                    const match = /language-(\w+)/.exec(className || '')
-                                    return !inline && match ? (
-                                        <div style={{position:"relative"}}>
-                                      <SyntaxHighlighter
-                                        children={String(children).replace(/\n$/, '')}
-                                        language={match[1].toLowerCase()}
-                                        style={materialOceanic}
-                                        className="code-highlighter"
-                                        //useInlineStyles={false}
-                                        customStyle={{borderRadius:"15px", margin:"0"}}
-                                        PreTag="div"
-                                        wrapLines={true}
-                                        wrapLongLines={true}
-                                        {...props}
-                                      />
-                                      <p className='language-tag'>{match[1]}</p>
-                                      </div>
-                                    ) : (
-                                      <code className={className} {...props}>
-                                        {children}
-                                      </code>
-                                    )
-                                  }
-                            
-                        }} 
-                        children={v.text} className="results"/>
-                </div>
-
-                
-               
-                {/* TODO: Move the "Add Additional Block" out of the loop*/}
-
-                
-                {/*<button class="toggle-btn btn" onClick={() => handleEdit(index, vIndex)}> Toggle Edit </button>*/}
-                <button class="delete-btn btn" onClick={() => handleBlockDelete(vIndex, index)}> Delete Block </button>
-                <button class="toggle-btn btn" onClick={() => EditThis(index, vIndex)}>Edit This </button>
-
-
-
-                </div>))}
-
-                {/*<input type="text" value={st.value} onChange={(e) => handleChange(index, e)}/>*/}
-                <button onClick={()=>handleAdditionalBlock(index)} className='btn'> Add Additional Block</button>
-                <button class="delete-btn btn" onClick={() => handleDelete(index)}> Delete Section </button>
-
-            </div>)) }
+                <SectionContainers index = {index} swapSection={swapSection} st={st} handleTitleChange={handleTitleChange} handleTitleExpand={handleTitleExpand} handleBlockDelete={handleBlockDelete} handleAdditionalBlock={handleAdditionalBlock} handleDelete={handleDelete} EditThis={EditThis}/>
+            )) }
             
             <div className='footer'>
                 <button className='util-btn add-btn' onClick={handleAdd}> + Add Section</button>
@@ -787,7 +800,7 @@ export default function Drawing() {
                     
         </div>
     )
-    if (fail) {return <NotFoundPage/>} else {return pg}
+    if (fail === "Error") {return <NotFoundPage/>} else if (fail === "No Permission") {return <NoPermissionPage/>} else {return pg}
 
 }
 
