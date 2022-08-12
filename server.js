@@ -129,7 +129,7 @@ app.post('/save', async (req, res) => {
         note.lastModified = req.body.lastModified
         note.share = req.body.share
 
-        console.log(req.body.share)
+        //console.log(req.body.share)
         //console.log("string: " + note.toString())
 
         for(let i = 0; i < note.share.length; i++) {
@@ -194,10 +194,18 @@ app.post('/posts', async (req, res) => {
     console.log("Requesting Nooto id:" + req.body.NootoID)
     console.log("owner: " + req.body.UID)
     
+    let names = []
+
     try {
         const note = await noo.findById({"_id": req.body.NootoID});
         if (note.owner === req.body.UID || note.share.includes(req.body.UID)) {
-            res.json({note, state:"Pass"})
+            for (let i = 0; i < note.share.length; i++) {
+                let name = await User.findOne({"UID": note.share[i]}).populate("Name", "UID");
+                names.push(name)
+            }
+
+
+            res.json({note, state:"Pass", shareNames:names})
         } else {
             res.json({state: "No Permission"})
         }
@@ -250,7 +258,7 @@ app.get("/userTest/:id", async (req, res)=>{
 
 app.get("/user/getnooto/:uid", async (req, res) => {
         const user = await User.findOne({"UID": req.params.uid});
-        const available = await User.findOne({"UID": req.params.uid}).populate("Nooto", "title");
+        const available = await User.findOne({"UID": req.params.uid}).populate("Nooto", "title owner");
 
         let availableList = []
     for (let j = 0; j < available.Nooto.length; j++) {
@@ -261,7 +269,7 @@ app.get("/user/getnooto/:uid", async (req, res) => {
         //res.json(note)
         for (let i = 0; i < user.Nooto.length; i++) {
             let note = user.Nooto[i]
-            console.log("Note" + note)
+            //console.log("Note" + note)
         }
 
         clearnNooto(user, user.Nooto, availableList)

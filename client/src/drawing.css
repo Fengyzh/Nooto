@@ -350,7 +350,6 @@ pre{
   color: white;
   margin: 0;
   margin-left: 1rem;
-  position: relative;
 
 }
 
@@ -421,6 +420,7 @@ pre{
 
 .doc-title{
   color:white;
+  text-align: center;
   width: 20%;
   font-size: 200%;
   border-radius: 10px;
@@ -453,11 +453,12 @@ pre{
 
 .setting-panel-container{
   position: absolute;
+  right: 0;
   background-color: black;
   width: 30rem;
   padding: 0 1.5rem;
   height: 15rem;
-  transform: translateX(-26rem);
+  /*transform: translateX(-26rem);*/
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px ;
   border-left: 1rem solid transparent;
@@ -593,11 +594,12 @@ pre{
 
 .share-panel-container{
   position: absolute;
+  right: 0;
   background-color: black;
   width: 30rem;
   padding: 0 1.5rem;
   height: 15rem;
-  transform: translateX(-23rem);
+  /*transform: translateX(-23rem);*/
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px ;
   border-left: 1rem solid transparent;
@@ -669,6 +671,9 @@ pre{
 
 .share-card{
   margin-left: 1rem;
+  background-color: rgb(29, 29, 29);
+  border-radius: 10px;
+  padding: 0 1rem;
 }
 
 .share-card:first-child {

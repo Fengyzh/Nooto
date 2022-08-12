@@ -54,6 +54,7 @@ export default function Drawing() {
     const [fail, setFail] = useState("Pass")
     const [settingPanel, setSettingPanel] = useState(false)
     const [sharePanel, setSharePanel] = useState(true)
+    const [shareNames, setShareNames] = useState()
 
 
     const [time, setTime] = useState("")
@@ -378,7 +379,14 @@ export default function Drawing() {
 
     const handleDocumentTitle = (e) => {
         //console.log(e.target.value)
+        let inputBox = document.getElementsByClassName("doc-title")[0]
         const val = e.target.value
+        if (e.target.value.length >= 30) {
+            inputBox.style.textAlign = "left"
+        } else {
+            inputBox.style.textAlign = "center"
+        }
+
         setstate({...state, title:val})
         console.log(state)
 
@@ -479,6 +487,9 @@ export default function Drawing() {
                         owner: data.owner,
                         share: data.share,
                         values:data.values})
+                    
+                    setShareNames(res.data.shareNames)
+
                     setLoad(!load)
                     console.log(res.data)
                 } 
@@ -638,12 +649,13 @@ export default function Drawing() {
                         <p style={{color: "white"}}> Scroll to see more {`->`}</p>
                         <div className='share-users-container'>
                             
-                            {state.share && state.share.map((v)=>{
+                            {shareNames && shareNames.map((v)=>{
 
                                 // TODO: Make this into a comp
                                 return (
                                 <div className='share-card'>
-                                    <p className='share-id' style={{color: "white"}}>ID: {v}</p>
+                                    <h3 className='share-id' style={{color: "white"}}> {v.Name? v.Name.length <= 25? v.Name : v.Name.substring(0,24)+"..." : "Unknown User"}</h3>
+                                    <p className='share-id' style={{color: "white"}}>ID: {v.UID}</p>
                                     
                                 </div>)
                             })}
