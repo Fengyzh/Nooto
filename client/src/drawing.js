@@ -11,20 +11,20 @@ import NotFoundPage from './compoents/NotFoundPage';
 import NoPermissionPage from './compoents/NoPermissionPage';
 import { BoardEditingContext } from './EditorContext';
 import SectionContainers from './compoents/SectionContainers';
+import { zTouch } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 
 /*
  TODO:
-    - Make a loading page compoent for when the user is trying to access an non-existent
-    Nooto, it should bring the user to a page saying "Nooto doesn't exist" instead
-    of just redirecting the user back to the profile page
+
+    - Make all "Width hidden" compoents to use the "isCondense" instead
 
 */
 
 
 export default function Drawing() {
     let navigate = useNavigate();
-    let {state, setstate} = BoardEditingContext()
+    let {state, setstate, width, setWidth, handleSave, setSave, setCondense, isCondense} = BoardEditingContext()
 
 /*
     What I did last time:
@@ -53,49 +53,16 @@ export default function Drawing() {
     const [load, setLoad] = useState(true)
     const [fail, setFail] = useState("Pass")
     const [settingPanel, setSettingPanel] = useState(false)
-    const [sharePanel, setSharePanel] = useState(true)
+    const [sharePanel, setSharePanel] = useState(false)
     const [shareNames, setShareNames] = useState()
 
 
+
     const [time, setTime] = useState("")
-    const [save, setSave] = useState(false)
 
-    let currentState = useRef(0);
+    let currentRight = useRef(0);
 
-/*
-    const [state, setstate] = useState({
-        Id: "",
-        title:"Test Document 2" ,
-        lastModified: "Unavailable",
-        createdDate: "Unavailable",
-        values: [{
-            title: "New Section",
-            value: [{
-                text: "good",
-            },
-            {
-                text: "bye",
-            }
-                    ],
 
-        }, 
-
-    // Next Section
-
-    {
-        title: "New Section",
-        value: [{
-            text: "good2",
-        },
-        {
-            text: "bye2",
-        }
-                ],
-
-    }
-
-]})
-*/
 
     function handleAdd() {
         setstate({...state,values:[...state.values, {title: "New Section", value:[{
@@ -106,7 +73,7 @@ export default function Drawing() {
         }
             ], edit: true}]})
 
-
+        setSave(true)
     }
 
 
@@ -197,35 +164,11 @@ export default function Drawing() {
     }
 */
 
-    function handleDelete(index) {
-        console.log("index: " + index)
-        const value = [...state.values]
-        console.log(value)
-        value.splice(index,1)
-        setstate({...state, values: value})
-        console.log(state)
-        console.log(state.Id)
-    }
 
 
 
-    const handleSave = () => {
-        console.log("saved...")
-        console.log(currentState.current)
-        
-        let date = new Date().toLocaleString()
-        
-
-        axios.post('/save', {
-            id: currentState.current.Id,
-            title: currentState.current.title,
-            values: currentState.current.values,
-            lastModified: date,
-            share: currentState.current.share
-         })
 
 
-    }
 
 
     const retractPanel = () => {
@@ -291,25 +234,7 @@ export default function Drawing() {
 
     }
 
-    const handleBlockDelete = (vIndex,index) => {
-
-        /* 
-    function handleDelete(index) {
-        console.log("index: " + index)
-        const value = [...state.values]
-        console.log(value)
-        value.splice(index,1)
-        setstate({...state, values: value})
-        console.log(state)
-        console.log(state.Id)
-    } */
-
-    let value = [...state.values]
-    value[index]["value"].splice(vIndex,1)
-    setstate({...state, values: value})
-
-
-    }
+ 
 
 
 
@@ -339,22 +264,24 @@ export default function Drawing() {
 
         //let backBtn = document.getElementsByClassName("right-back-btn")[0];
 
-
         setRight(!right)
 
         if (!right) {
             if (panel) {
               retractPanel()
             }
-            rightPanel.style.width="40vw"
-            board.style.width="60%"
-            board.style.marginRight="0rem"
+            board.classList.add("right-active")
+            rightPanel.classList.add("active")
+            //rightPanel.style.width="40vw"
+  
             leftArrow.style.transform="rotateY(180deg)"
             rightArrow.style.transform="rotateY(180deg)"
         } else {
-            rightPanel.style.width="0"
-            board.style.width="100%"
-            board.style.marginRight="0"
+            board.classList.remove("right-active")
+            rightPanel.classList.remove("active")
+
+            //rightPanel.style.width="0"
+
             leftArrow.style.transform="rotateY(0deg)"
             rightArrow.style.transform="rotateY(0deg)"
         }
@@ -436,7 +363,7 @@ export default function Drawing() {
 
     const handleAddShare = () => {
         let field = document.getElementsByClassName("share-field")[0].value
-        let newShareValue = currentState.current.share
+        let newShareValue = state.share
         newShareValue.push(field)
         setstate({...state, share:newShareValue})
     }
@@ -447,6 +374,37 @@ export default function Drawing() {
         setSharePanel(!sharePanel)
     }
 
+
+    const calibrateForScreenSize = () => {
+        let board = document.getElementsByClassName("board")[0];
+        console.log(currentRight.current)
+        if (board.classList.contains("right-active")) {
+            board.classList.remove("right-active")
+            setRight(!currentRight.current)
+        }
+        setWidth(window.innerWidth)
+        if (window.innerWidth < 765) {
+            setCondense(true)
+        } else {
+            setCondense(false)
+        }
+
+        console.log(window.innerWidth)
+
+    }
+
+    useEffect(() => {
+        let event = window.addEventListener('resize', calibrateForScreenSize);
+        setWidth(window.innerWidth)
+        
+
+
+        return event
+    }, [])
+
+    useEffect(() => {
+        currentRight.current = right
+    }, [right])
 
 
     useEffect(() => {
@@ -489,6 +447,9 @@ export default function Drawing() {
                         values:data.values})
                     
                     setShareNames(res.data.shareNames)
+                    if (data.owner !== currentUser.uid) {
+                        setCondense(true)
+                    }
 
                     setLoad(!load)
                     console.log(res.data)
@@ -571,48 +532,10 @@ export default function Drawing() {
 
     }, [currentUser])
     
-    useEffect(() => {
-    currentState.current = state
-  /*
-        for (let i = 0; i < state.values.length; i++) {
-            for (let j = 0; j < state.values[i]["value"].length; j++){
-                //if (state.values[i].edit) {
-                if (state.values[i]["value"][j].editable) {
-                    let textField = document.getElementsByClassName("textarea"+i.toString()+j.toString())[0];
-                    if (textField != undefined){
-                        textField.style.height = "auto";
-                        textField.style.height = textField.scrollHeight + "px"
-                    }
-                   
-                }
-        }
-            
-    }*/
-
-    /*
-    let text = document.getElementsByClassName("textarea")
-    console.log(text)
-    */
-    }, [state])
+ 
     
 
-    useEffect(() => {
-        let interval = setInterval(()=>{
-        if (save) {
-
-                setSave(false)
-                handleSave()
-                //document.getElementsByClassName("save-btn")[0].click();
-            }
-        }, 5000)
-
-
-
-
-      return () => {
-        clearInterval(interval);
-      }
-    }, [save])
+ 
     
 
 
@@ -620,7 +543,7 @@ export default function Drawing() {
 
     <div className="full">
 
-        {console.log(save)}
+        {/*console.log(save)*/}
         {/* TEMP FIX, Need a "Loading" indicator when fetching from server
         for now, if the first section is empty, it will say "loading" */}
         {/*state.values[0].value? */}
@@ -631,7 +554,6 @@ export default function Drawing() {
                 <h1 className='title' style={{cursor: "pointer"}} onClick={()=>navigate("/")}>Nooto</h1>
                 <h1 className='panel-btn' onClick={()=>retractPanel()}> {`>`} </h1>
                 </div>
-                <input className="doc-title" onChange={(e)=>handleDocumentTitle(e)} value={state.title}/>
                 
                 <div className='nav-title-container'>
 
@@ -662,6 +584,7 @@ export default function Drawing() {
 
                         </div>
                     
+                        {!isCondense? 
                         <div className='share-add-section'>
                             <h3 className='share-titles'>Add user to this Nooto</h3>
                             <input className='share-field' type="text"/>
@@ -669,7 +592,7 @@ export default function Drawing() {
 
 
                         </div>
-
+                        : ""}
 
 
                 </div>
@@ -707,14 +630,16 @@ export default function Drawing() {
 
                         <div>
                             <h3 className='setting-titles'> Title:  </h3>
-                            <textarea value={state.title} className="setting-title-field" onChange={(e) => handleDocumentTitle(e)}/>
+                            <textarea disabled={isCondense? true : false} value={state.title} className="setting-title-field" onChange={(e) => handleDocumentTitle(e)}/>
 
                         </div>
                         
                         <div>
+                        {isCondense? "" :
                             <div className="setting-delete-nooto">
                                 <button onClick={handleDeleteNooto} className="setting-delete-btn">Delete This Nooto</button>
                             </div>
+                        }
                         </div>
 
                     </div>
@@ -724,10 +649,12 @@ export default function Drawing() {
                 </div>
 
 
+                {!isCondense?
                 <div className='panel-btn edit-btn' onClick={()=>handleRight()}>
                     <h1 className='arrow-btn'> {`<`}</h1>
                     <h1 className='arrow-btn'> {`>`}</h1>
                 </div>
+                : ""}
                 </div>
 
             </div>
@@ -759,21 +686,22 @@ export default function Drawing() {
         
 
         <div class="board">
-       <h2>{time}</h2>
        {/*<input onChange={(e)=>handleDocumentTitle(e)}/>*/}
-        
+       <input disabled={!isCondense? false : true} className="doc-title" spellcheck="false" onChange={(e)=>handleDocumentTitle(e)} value={state.title}/>
+
 
             {state.values.map((st, index) => (
 
-                <SectionContainers index = {index} swapSection={swapSection} st={st} handleTitleChange={handleTitleChange} handleTitleExpand={handleTitleExpand} handleBlockDelete={handleBlockDelete} handleAdditionalBlock={handleAdditionalBlock} handleDelete={handleDelete} EditThis={EditThis}/>
+                <SectionContainers index = {index} swapSection={swapSection} handleTitleChange={handleTitleChange} handleTitleExpand={handleTitleExpand} handleAdditionalBlock={handleAdditionalBlock} EditThis={EditThis}/>
             )) }
             
+        {!isCondense?
             <div className='footer'>
                 <button className='util-btn add-btn' onClick={handleAdd}> + Add Section</button>
                 {/*<button onClick={handleCloseAll}>Close All Edit</button>*/}
                 <button className='util-btn save-btn' onClick={handleSave}> v Save Nooto</button>
             </div>
-
+        : "" }
            
             {/*<button onClick={handleScroll(0)}> scroll </button>*/}
             
@@ -782,8 +710,10 @@ export default function Drawing() {
             
             {/* Board ends here */}
         
+            {!isCondense?
           <div className="right">
-
+          
+            
                     <div className='right-title-container'>
                     <button className='right-back-btn' onClick={()=> handleRight()}>
                         {">"}
@@ -802,9 +732,11 @@ export default function Drawing() {
                     </textarea>
 
                     : "Not editing any block"}
+            
+            
 
           </div>
-
+        : ""}
             
             </div>
             </div>

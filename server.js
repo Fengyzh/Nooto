@@ -133,21 +133,24 @@ app.post('/save', async (req, res) => {
         //console.log("string: " + note.toString())
 
         for(let i = 0; i < note.share.length; i++) {
-            console.log("inLoop: " + req.body.share[i])
+            console.log("inLoop Users: " + req.body.share[i])
             //console.log(ObjectId(req.body.id))
 
             usr = await User.findOne({UID: note.share[i]})
-            //console.log("xxx: " + usr.Nooto[0].toString())
+            console.log("Current user Nootos: " + usr.Nooto)
+            console.log("body: " + req.body.id)
 
             if (usr) {
 
                 let result = usr.Nooto.filter((value) => 
                     {
                     console.log(value.toString())
-                    value.toString() == req.body.id
+                    return value.toString() == req.body.id
                     }
                                
                 )
+                
+                console.log("Result array: " + result)
 
                 if (result.length == 0) {
                     console.log("adding to user: " + usr.UID)

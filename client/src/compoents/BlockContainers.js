@@ -2,8 +2,12 @@ import React from 'react'
 import ReactMarkdown from 'react-markdown';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import { materialOceanic } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { BoardEditingContext } from '../EditorContext';
 
-export default function BlockContainers({value, vIndex, index, EditThis, handleBlockDelete}) {
+
+export default function BlockContainers({value, vIndex, index, EditThis}) {
+
+  let {width, handleBlockDelete, isCondense} = BoardEditingContext()
 
 
   return (
@@ -71,10 +75,12 @@ export default function BlockContainers({value, vIndex, index, EditThis, handleB
 
                 
                 {/*<button class="toggle-btn btn" onClick={() => handleEdit(index, vIndex)}> Toggle Edit </button>*/}
-                <button class="delete-btn btn" onClick={() => handleBlockDelete(vIndex, index)}> Delete Block </button>
-                <button class="toggle-btn btn" onClick={() => EditThis(index, vIndex)}>Edit This </button>
-
-
+                {!isCondense?
+                <div class="block-controls-container">
+                  <button class="delete-btn block-btn" onClick={() => handleBlockDelete(vIndex, index)}> Delete Block </button>
+                  <button class="toggle-btn block-btn" onClick={() => EditThis(index, vIndex)}>Edit This </button>
+                </div>
+                : "" }
 
                 </div>
   )
