@@ -365,6 +365,21 @@ export default function Drawing() {
         let field = document.getElementsByClassName("share-field")[0].value
         let newShareValue = state.share
         newShareValue.push(field)
+
+        axios.post('/updateshare', {
+            id: state.Id,
+            share: newShareValue,
+            difference: field,
+            type:"Add"
+         }).then((res) => {
+            if (res.data.shareNames) {
+                console.log(res.data.shareNames)
+                setShareNames(res.data.shareNames)
+            }
+         })
+    
+
+
         setstate({...state, share:newShareValue})
     }
   
@@ -373,6 +388,30 @@ export default function Drawing() {
         setSettingPanel(false)
         setSharePanel(!sharePanel)
     }
+
+    const handleShareDelete = (cardIndex) => {
+        let newShareValue = state.share.filter((val)=> val != state.share[cardIndex])
+        let deleteList = state.share.filter((val)=> val === state.share[cardIndex])
+
+
+        
+        axios.post('/updateshare', {
+            id: state.Id,
+            share: newShareValue,
+            difference: deleteList,
+            type:"Delete"
+         }).then((res) => {
+            setstate({...state, share:newShareValue})
+            if (res.data.shareNames) {
+                setShareNames(res.data.shareNames)
+            }
+         })
+         
+        
+        
+    }
+
+
 
 
     const calibrateForScreenSize = () => {
@@ -571,11 +610,12 @@ export default function Drawing() {
                         <p style={{color: "white"}}> Scroll to see more {`->`}</p>
                         <div className='share-users-container'>
                             
-                            {shareNames && shareNames.map((v)=>{
+                            {shareNames && shareNames.map((v, cardIndex)=>{
 
                                 // TODO: Make this into a comp
                                 return (
                                 <div className='share-card'>
+                                    <h3 className='share-card-del' onClick={() => handleShareDelete(cardIndex)}>X</h3>
                                     <h3 className='share-id' style={{color: "white"}}> {v.Name? v.Name.length <= 25? v.Name : v.Name.substring(0,24)+"..." : "Unknown User"}</h3>
                                     <p className='share-id' style={{color: "white"}}>ID: {v.UID}</p>
                                     

@@ -132,6 +132,7 @@ app.post('/save', async (req, res) => {
         //console.log(req.body.share)
         //console.log("string: " + note.toString())
 
+        /*
         for(let i = 0; i < note.share.length; i++) {
             console.log("inLoop Users: " + req.body.share[i])
             //console.log(ObjectId(req.body.id))
@@ -281,11 +282,118 @@ app.get("/user/getnooto/:uid", async (req, res) => {
 
 })
 
+
+
+app.post('/updateshare', async (req,res) => {
+
+    let note = await noo.findById({"_id": req.body.id});
+    note.share = req.body.share
+
+    console.log("Updating Share Values")
+    //console.log(req.body.share)
+    //console.log("string: " + note.toString())
+    let names = []
+    for (let i = 0; i < req.body.share.length; i++) {
+        let name = await User.findOne({"UID": req.body.share[i]}).select("Name UID");
+        names.push(name)
+    }
+
+    if (req.body.type === "Delete") {
+        console.log("In delete update....")
+
+        clearNootoOne(req.body.difference[0], req.body.id)
+        note.save().then(() => {
+            console.log("names: " + names)
+            res.json({share:note.share, shareNames: names})
+            
+        })
+        return
+
+    }
+
+
+    for(let i = 0; i < note.share.length; i++) {
+        console.log("inLoop Users: " + req.body.share[i])
+        //console.log(ObjectId(req.body.id))
+
+        usr = await User.findOne({UID: note.share[i]})
+        console.log("Current user Nootos: " + usr.Nooto)
+        console.log("body: " + req.body.id)
+
+        if (usr) {
+
+            let result = usr.Nooto.filter((value) => 
+                {
+                console.log(value.toString())
+                return value.toString() == req.body.id
+                }
+                           
+            )
+            
+            console.log("Result array: " + result)
+
+            if (result.length == 0) {
+                console.log("adding to user: " + usr.UID)
+                usr.Nooto.push(ObjectId(req.body.id))
+                usr.save()
+            }
+        }
+        
+
+    }
+    
+    note.save().then(() => {
+        console.log("names: " + names)
+
+        res.json({share: note.share, shareNames: names})
+    })
+
+})
+
+
+
+
+
+
 // ----- Util Function ----- //
 
+
+
+
+
+async function clearNootoOne (userID, NootoID) {
+    const user = await User.findOne({"UID": userID});
+    //console.log("USER: " + user)
+
+    let index = 0
+    for (let j = 0; j < user.Nooto.length; j++) {
+        let processedString = JSON.stringify(user.Nooto[j]._id).replace(/\"/g, "")
+        console.log(processedString + " : " + NootoID)
+        if (NootoID === processedString) {
+            index = user.Nooto.indexOf(processedString)
+            user.Nooto.splice(index, 1)
+
+        }
+    }
+    console.log(user.Nooto)
+
+    user.save()
+
+
+
+    //let removed = user.Nooto.splice(indexList[i] - diff,1)
+    //user.save()
+
+}
+
+
+
+
+
 function clearnNooto(user, fullList, availableList) {
-    //console.log(fullList)
-    //console.log(availableList)
+    // fullList is the current list
+    // AvailableList is what is current availabe after popluate
+
     const difference = fullList.filter(item => !availableList.includes(JSON.stringify(item).replace(/\"/g, "")))
     const indexList = []
     for (let j = 0; j < difference.length; j++) {
