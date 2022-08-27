@@ -283,6 +283,32 @@ app.get("/user/getnooto/:uid", async (req, res) => {
 })
 
 
+app.post('/share/delete', async (req, res) => {
+    console.log(req.body)
+
+    
+    let note = await noo.findById({"_id": req.body.id});
+    note.share = req.body.share
+
+    let names = []
+    for (let i = 0; i < req.body.share.length; i++) {
+        let name = await User.findOne({"UID": req.body.share[i]}).select("Name UID");
+        names.push(name)
+    }
+        console.log("In delete update....")
+
+        clearNootoOne(req.body.difference[0], req.body.id)
+        note.save().then(() => {
+            console.log("names: " + names)
+            res.json({share:note.share, shareNames: names})
+            
+        })
+    
+
+    
+})
+
+
 
 app.post('/updateshare', async (req,res) => {
 
@@ -296,19 +322,6 @@ app.post('/updateshare', async (req,res) => {
     for (let i = 0; i < req.body.share.length; i++) {
         let name = await User.findOne({"UID": req.body.share[i]}).select("Name UID");
         names.push(name)
-    }
-
-    if (req.body.type === "Delete") {
-        console.log("In delete update....")
-
-        clearNootoOne(req.body.difference[0], req.body.id)
-        note.save().then(() => {
-            console.log("names: " + names)
-            res.json({share:note.share, shareNames: names})
-            
-        })
-        return
-
     }
 
 

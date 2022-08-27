@@ -24,7 +24,7 @@ import { zTouch } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 export default function Drawing() {
     let navigate = useNavigate();
-    let {state, setstate, width, setWidth, handleSave, setSave, setCondense, isCondense} = BoardEditingContext()
+    let {state, setstate, handleSave, setSave, setCondense, isCondense, handleScroll} = BoardEditingContext()
 
 /*
     What I did last time:
@@ -55,10 +55,6 @@ export default function Drawing() {
     const [settingPanel, setSettingPanel] = useState(false)
     const [sharePanel, setSharePanel] = useState(false)
     const [shareNames, setShareNames] = useState()
-
-
-
-    const [time, setTime] = useState("")
 
     let currentRight = useRef(0);
 
@@ -94,24 +90,7 @@ export default function Drawing() {
 
     }
 
-    function handleTitleChange(index, e) {
-        const title = [...state.values]    
-        title[index]["title"] = e.target.value  
-        setstate({...state, values:title}) 
-        //console.log(state[index])
-        let targetTitle = document.getElementsByClassName("titles")[index];
 
-        if (e.target.value.length < 35) {
-            targetTitle.style.height = "5rem";
-            targetTitle.style.overflow = "hidden";
-                }
-        
-        setSave(true)
-        /*
-        e.target.style.height = "auto";
-        e.target.style.height = e.target.scrollHeight + "px";
-        */
-    }
 
     /*
     function handleEdit(index, vIndex) {
@@ -212,7 +191,7 @@ export default function Drawing() {
         
     }
 
-
+/*
     const handleScroll = (index) => {
        // Right now it will only scroll to the first element
 
@@ -222,7 +201,7 @@ export default function Drawing() {
        const y = boxes[index].getBoundingClientRect().top + window.pageYOffset - 30
         window.scrollTo({top:y, left:0, behavior: 'smooth'})
     }
-
+*/
 
     const handleAdditionalBlock = (index) => {
         let value = state.values
@@ -238,22 +217,7 @@ export default function Drawing() {
 
 
 
-    const handleTitleExpand = (index, e) => {
-        let targetTitle = document.getElementsByClassName("titles")[index];
-        let titleHeight = targetTitle.style.height;
 
-        console.log(titleHeight)
-        if (titleHeight == "max-content") {
-            targetTitle.style.height = "5rem";
-            targetTitle.style.overflow = "hidden";
-            targetTitle.scrollTop = 0
-        } else {
-            targetTitle.style.height = "max-content";
-            targetTitle.style.overflow = "scroll";
-        }
-        //targetTitle.style.height = "auto";
-        //targetTitle.style.height = targetTitle.scrollHeight + "px";
-    }
 
 
     const handleRight = () => {
@@ -335,6 +299,8 @@ export default function Drawing() {
 
 
     // ------ Util function
+
+/*
     function swapSection(from, to) {
         let tempStateValues = state.values
         let temp = tempStateValues[from]
@@ -346,6 +312,7 @@ export default function Drawing() {
 
         setSave(true)
     }
+    */
 
     const handleSettingPanel = () => {
         setSettingPanel(!settingPanel)
@@ -365,7 +332,9 @@ export default function Drawing() {
         let field = document.getElementsByClassName("share-field")[0].value
         let newShareValue = state.share
         newShareValue.push(field)
+        console.log(newShareValue)
 
+        
         axios.post('/updateshare', {
             id: state.Id,
             share: newShareValue,
@@ -391,11 +360,11 @@ export default function Drawing() {
 
     const handleShareDelete = (cardIndex) => {
         let newShareValue = state.share.filter((val)=> val != state.share[cardIndex])
-        let deleteList = state.share.filter((val)=> val === state.share[cardIndex])
-
-
+        let deleteList = [state.share[cardIndex]]
+        console.log("delete")
         
-        axios.post('/updateshare', {
+        
+        axios.post('/share/delete', {
             id: state.Id,
             share: newShareValue,
             difference: deleteList,
@@ -421,7 +390,6 @@ export default function Drawing() {
             board.classList.remove("right-active")
             setRight(!currentRight.current)
         }
-        setWidth(window.innerWidth)
         if (window.innerWidth < 765) {
             setCondense(true)
         } else {
@@ -434,7 +402,6 @@ export default function Drawing() {
 
     useEffect(() => {
         let event = window.addEventListener('resize', calibrateForScreenSize);
-        setWidth(window.innerWidth)
         
 
 
@@ -732,7 +699,7 @@ export default function Drawing() {
 
             {state.values.map((st, index) => (
 
-                <SectionContainers index = {index} swapSection={swapSection} handleTitleChange={handleTitleChange} handleTitleExpand={handleTitleExpand} handleAdditionalBlock={handleAdditionalBlock} EditThis={EditThis}/>
+                <SectionContainers index = {index} handleAdditionalBlock={handleAdditionalBlock} EditThis={EditThis}/>
             )) }
             
         {!isCondense?

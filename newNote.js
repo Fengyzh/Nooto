@@ -6,7 +6,7 @@ const NoteSchema = mongoose.Schema({
     lastModified: String,
     createdDate: String,
     owner: String,
-    share: [String],
+    share: [],
     values: [{
         title: String,
         value: [{

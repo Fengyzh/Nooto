@@ -7,7 +7,7 @@ import { BoardEditingContext } from '../EditorContext';
 
 export default function BlockContainers({value, vIndex, index, EditThis}) {
 
-  let {width, handleBlockDelete, isCondense} = BoardEditingContext()
+  let {handleBlockDelete, isCondense} = BoardEditingContext()
 
 
   return (

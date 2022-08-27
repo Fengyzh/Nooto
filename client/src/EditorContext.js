@@ -130,12 +130,36 @@ function handleDelete(index) {
 }
 
 
-const [width, setWidth] = useState(window.innerWidth)
+const handleScroll = (index) => {
+    // Right now it will only scroll to the first element
+
+     let boxes = document.getElementsByClassName("section-containers");
+     console.log(boxes[index].getBoundingClientRect().top)
+     //boxes[0].scrollIntoView({ behavior: 'smooth' })
+    const y = boxes[index].getBoundingClientRect().top + window.pageYOffset - 30
+     window.scrollTo({top:y, left:0, behavior: 'smooth'})
+ }
+
+
+function swapSection(from, to) {
+    let tempStateValues = state.values
+    let temp = tempStateValues[from]
+    tempStateValues[from] = tempStateValues[to]
+    tempStateValues[to] = temp
+    setstate({...state, values:tempStateValues})
+
+    handleScroll(to)
+
+    setSave(true)
+}
+
+
+
 
 
 
   return (
-    <BoardContext.Provider value={{isCondense, setCondense ,state, setstate, width, setWidth, handleSave, setSave, handleBlockDelete, handleDelete}}>
+    <BoardContext.Provider value={{isCondense, setCondense ,state, setstate, handleSave, setSave, handleBlockDelete, handleDelete, swapSection, handleScroll}}>
         {children}
     </BoardContext.Provider>
   )

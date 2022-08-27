@@ -6,12 +6,44 @@ import { materialOceanic } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import BlockContainers from './BlockContainers';
 
 
-export default React.memo(function SectionContainers({swapSection, index, handleAdditionalBlock, handleTitleChange, handleTitleExpand, EditThis}) {
+export default function SectionContainers({index, handleAdditionalBlock, EditThis}) {
 
-    let {state, setstate, width, handleDelete, isCondense} = BoardEditingContext()
+    let {state, setstate, handleDelete, isCondense, swapSection, setSave} = BoardEditingContext()
     let st = state.values[index]
 
 
+    function handleTitleChange(index, e) {
+      const title = [...state.values]    
+      title[index]["title"] = e.target.value  
+      setstate({...state, values:title}) 
+      console.log("using the section")
+      let targetTitle = document.getElementsByClassName("titles")[index];
+
+      if (e.target.value.length < 35) {
+          targetTitle.style.height = "5rem";
+          targetTitle.style.overflow = "hidden";
+              }
+      
+      setSave(true)
+  }
+
+
+  const handleTitleExpand = (index, e) => {
+    let targetTitle = document.getElementsByClassName("titles")[index];
+    let titleHeight = targetTitle.style.height;
+
+    console.log(titleHeight)
+    if (titleHeight == "max-content") {
+        targetTitle.style.height = "5rem";
+        targetTitle.style.overflow = "hidden";
+        targetTitle.scrollTop = 0
+    } else {
+        targetTitle.style.height = "max-content";
+        targetTitle.style.overflow = "scroll";
+    }
+  
+    console.log("using expand")
+}
 
 
     
@@ -62,4 +94,4 @@ export default React.memo(function SectionContainers({swapSection, index, handle
 
 
   )
-})
+}
