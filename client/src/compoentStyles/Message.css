@@ -1,0 +1,16 @@
+.msg-container {
+    position: absolute;
+    background-color: black;
+    color: white;
+    width: 30%;
+    height: 2rem;
+    line-height: 2rem;
+    text-align: center;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    border-radius: 20px;
+    vertical-align: middle;
+    transition: 0.3s ease;
+}

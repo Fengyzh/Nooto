@@ -1,3 +1,7 @@
+.profile-page{
+    position: relative;
+}
+
 .profile-Nooto-block{
     display: block;
     width: 15rem;
@@ -45,6 +49,7 @@
 
 .profile-Nooto-container{
     margin: 1rem;
+    position: relative;
 }
 
 .welcome-block{
@@ -189,6 +194,17 @@ h1.head-bar-items {
 
 .profile-edit-close-btn{
     cursor: pointer;
+}
+
+
+.ownership-icon{
+    width: 1rem;
+    height: 1rem;
+    background-color: dodgerblue;
+    position: absolute;
+    border-radius: 50%;
+    z-index: 999;
+    right: 0;
 }
 
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { deleteUser, updateProfile } from 'firebase/auth'
@@ -7,6 +7,7 @@ import { userContext } from './userContext';
 import { UserAuth } from './AuthContext';
 import "./profile.css"
 import ProfileCard from './compoents/ProfileCompoents/ProfileCard';
+import Message from './compoents/Message';
 
 
 /*
@@ -22,32 +23,10 @@ export default function Profile() {
     const [note, setNote] = useState("");
     const [edit, setEdit] = useState(false)
     const [name, setName] = useState("")
-/*
-    const logout = () => {
-        axios.get('/logout').then((response) => setauth(response.data.auth))
-        navigate("/login")
+    const [msg, setMsg] = useState("")
 
-    }
-  */
-    //const [title, setTitle] = useState({});
   
-  
-  /*
-    function getStuff() {
-      /*
-      await fetch('/auth').then(res => res.json())
-      .then(titles => setauth(titles))
-  
-      axios.get('/auth').then(res => setauth(res.data.auth))
-      
-  
-    }
 
-    useEffect(() => {
-        getStuff()
-    
-    }, [auth])
-    */
 
     const handleLogout = async () =>{
         try {
@@ -111,11 +90,25 @@ export default function Profile() {
         */
     }
 
-    const updateProfileChanges= () => {
+    function updateProfileChanges() {
         if (currentUser) {
+            
+             axios.post('/user/name', {
+                uid: currentUser.uid,
+                newName: name
+            })
+
+
             updateProfile(currentUser, {
                 displayName:name
             })
+            
+
+            setMsg("Profile Updated")
+
+            let msgPopup = setTimeout(()=>{
+                setMsg("")
+            }, 2000)
         }
     }
 
@@ -144,6 +137,7 @@ export default function Profile() {
         })
     }
     }, [currentUser])
+
     
 
 
@@ -155,6 +149,7 @@ export default function Profile() {
             {console.log("profile: ")}
             {console.log(currentUser)}
 
+            {msg? <Message props={{msg ,pos:"top", margin:"1"}}/> : ""}
             
             <div className='profile-container'>
                 {/*
@@ -200,6 +195,7 @@ export default function Profile() {
             </div>
 
             <div className='nooto-container'>
+                
             {note? 
                 note.map((value)=>{
                     return (

@@ -3,15 +3,12 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import React from 'react'
 import { UserAuth } from './AuthContext';
-import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
-import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
-import { materialOceanic } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import NotFoundPage from './compoents/NotFoundPage';
 import NoPermissionPage from './compoents/NoPermissionPage';
 import { BoardEditingContext } from './EditorContext';
 import SectionContainers from './compoents/SectionContainers';
-import { zTouch } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import ShareCard from './compoents/NoteCompoents/ShareCard';
 
 
 /*
@@ -331,6 +328,10 @@ export default function Drawing() {
     const handleAddShare = () => {
         let field = document.getElementsByClassName("share-field")[0].value
         let newShareValue = state.share
+        if (state.share.includes(field)) {
+            return
+        }
+
         newShareValue.push(field)
         console.log(newShareValue)
 
@@ -415,28 +416,11 @@ export default function Drawing() {
 
     useEffect(() => {
 
-
-        /*
-        const text = document.querySelectorAll(".textarea");
-        for (var i = 0; i < text.length; i++) {
-        text[i].addEventListener("input", function (e) {
-            this.style.height = "auto";
-            this.style.height = this.scrollHeight + "px";
-          });
-        }*/
-        /*
-        document.addEventListener('scroll', function(e) {
-            if (window.pageXOffset >= 4) {
-                window.scrollTo({left:0, behavior: 'smooth'})
-            }
-        })
-        */
-
         let markdownFields = document.getElementsByClassName("results");
         let textFields = document.getElementsByClassName("textarea");
 
         if (currentUser) {
-            axios.post('/posts', {
+            axios.post('/nooto', {
                 UID: currentUser.uid,
                 NootoID: id
             })
@@ -560,7 +544,9 @@ export default function Drawing() {
                 <h1 className='title' style={{cursor: "pointer"}} onClick={()=>navigate("/")}>Nooto</h1>
                 <h1 className='panel-btn' onClick={()=>retractPanel()}> {`>`} </h1>
                 </div>
-                
+
+            {isCondense? <div className='view-only-text'>View Only</div> : "" }
+
                 <div className='nav-title-container'>
 
                 <div className='share'> 
@@ -581,12 +567,7 @@ export default function Drawing() {
 
                                 // TODO: Make this into a comp
                                 return (
-                                <div className='share-card'>
-                                    <h3 className='share-card-del' onClick={() => handleShareDelete(cardIndex)}>X</h3>
-                                    <h3 className='share-id' style={{color: "white"}}> {v.Name? v.Name.length <= 25? v.Name : v.Name.substring(0,24)+"..." : "Unknown User"}</h3>
-                                    <p className='share-id' style={{color: "white"}}>ID: {v.UID}</p>
-                                    
-                                </div>)
+                                <ShareCard v={v} cardIndex={cardIndex} handleShareDelete={handleShareDelete} isCondense={isCondense}/>)
                             })}
 
                         </div>
@@ -610,7 +591,7 @@ export default function Drawing() {
 
                 
                 <div className='title'>
-                    <h1 style={{cursor: "pointer"}} onClick={()=>handleSettingPanel()}> O </h1>
+                    <h1 className='setting-icon' onClick={()=>handleSettingPanel()}> O </h1>
  
                     {settingPanel?
                     <div className="setting-panel-container"> 

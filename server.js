@@ -6,7 +6,7 @@ const notes = require('./notes')
 const noo = require('./newNote')
 const User = require('./User')
 var ObjectId = require('mongodb').ObjectId;
-
+const nootoRouter = require("./Routes/nootoRoute")
 
 const app = express(); 
 const port = 4000; 
@@ -16,11 +16,7 @@ const port = 4000;
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-app.use(session( {
-    secret: "Secret",
-    resave: false,
-    saveUninitialized: true
-}))
+app.use("/nooto", nootoRouter)
 
 
 function check(req, res, next) {
@@ -54,25 +50,7 @@ app.get("/", (req, res) => {
 
 
 // create a POST route
-app.post('/login', (req, res) => {
 
-    console.log("post requested")
-    //console.log(req.body)
-
-    if (req.body.username) {
-        req.session.username = req.body.username
-    }
-    if (req.body.password == "123") {
-        req.session.auth = true
-    } else {
-        req.session.auth = false
-    }
-
-    res.json({auth:req.session.auth})
-    
-
-   
-});
 
 
 app.get('/auth', (req, res) => {
@@ -88,13 +66,6 @@ app.get('/auth', (req, res) => {
 
 })
 
-app.get('/logout', (req, res) => {
-
-    console.log("logout")
-   req.session.auth = false;
-    res.json({auth:false})
-
-})
 
 app.post('/save', async (req, res) => {
 
@@ -194,7 +165,8 @@ app.get('/posts/:id', async (req, res) => {
     }
 })
 */
-app.post('/posts', async (req, res) => {
+/*
+app.post('/nooto', async (req, res) => {
     console.log("Requesting Nooto id:" + req.body.NootoID)
     console.log("owner: " + req.body.UID)
     
@@ -219,6 +191,7 @@ app.post('/posts', async (req, res) => {
         res.json({state: "Error"})
     }
 })
+*/
 
 
 app.post('/userTest', (req,res) => {
@@ -286,6 +259,19 @@ app.get("/user/getnooto/:uid", async (req, res) => {
         res.send("ERROR in getting User Nooto in profile")
     }
 
+})
+
+
+app.post('/user/name', async (req, res) => {
+    const user = await User.findOne({"UID":req.body.uid})
+    if (user) {
+        user.Name = req.body.newName
+        user.save()
+        res.status(200)
+        res.send("OK")
+    } else {
+        res.send("User not found")
+    }
 })
 
 
