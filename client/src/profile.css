@@ -17,6 +17,7 @@
 }
 
 
+
 .profile-Nooto-block:before {
     content: '';
     background: black;
@@ -39,6 +40,7 @@
 .nooto-container{
     width: 100%;
     display: flex;
+    min-height: 20vh;
 }
 
 .profile-Nooto-container{
@@ -108,7 +110,6 @@ h1.head-bar-items {
     height: 20rem;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
-    transform: translateX(25rem);
     transition: 0.3s ease-in-out;
 }
 
@@ -155,12 +156,9 @@ h1.head-bar-items {
     justify-content: space-between;
 }
 
-
-.profile-update-btn{
+.profile-btn {
     border-radius: 10px;
     border:2px solid transparent;
-    background-color: white;
-    color: black;
     padding: 0 1rem;
     font-size: larger;
     cursor: pointer;
@@ -171,9 +169,21 @@ h1.head-bar-items {
     transition: 0.3s ease-in;
 }
 
+
+.profile-update-btn{
+    background-color: white;
+    color: black;
+}
+
 .profile-update-btn:hover{
     background-color: dodgerblue;
     color: white;
+}
+
+.profile-delete-btn {
+    margin-top: 0;
+    background-color: rgb(255, 72, 72);
+    color: black;
 }
 
 

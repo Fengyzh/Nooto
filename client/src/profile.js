@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { updateProfile } from 'firebase/auth'
+import { deleteUser, updateProfile } from 'firebase/auth'
 import { useNavigate } from 'react-router';
 import { userContext } from './userContext';
 import { UserAuth } from './AuthContext';
@@ -99,13 +99,16 @@ export default function Profile() {
 
     const handleProfileEdit = () => {
         setEdit(!edit)
+        /*
         let editPanel = document.getElementsByClassName("profile-edit")[0]
 
+        
         if (!edit) {
             editPanel.style.transform = "translateX(0rem)"
         } else {
             editPanel.style.transform = "translateX(25rem)"
         }
+        */
     }
 
     const updateProfileChanges= () => {
@@ -114,6 +117,18 @@ export default function Profile() {
                 displayName:name
             })
         }
+    }
+
+
+    async function handleDeleteUser() {
+            if (currentUser) {
+                await axios.delete(`/users/${currentUser.uid}`).then((res) => {
+                deleteUser(currentUser)
+
+            })
+        }
+
+
     }
 
 
@@ -135,7 +150,7 @@ export default function Profile() {
     return (
         
 
-        <div>
+        <div className='profile-page'>
             
             {console.log("profile: ")}
             {console.log(currentUser)}
@@ -158,6 +173,7 @@ export default function Profile() {
                     <button onClick={handleLogout}> Logout </button>
                 </div>
 
+            {edit?
                 <div className='profile-edit'>
                     <div className='profile-edit-title'>
                         <h2> Edit Profile</h2>
@@ -169,8 +185,10 @@ export default function Profile() {
                         <label for="profile-edit-name" className='profile-edit-labels'> Name: </label>
                     </div>
                     <input id="profile-edit-name" className='profile-edit-name' type="text" placeholder={currentUser && currentUser.displayName? currentUser.displayName : ""} onChange={(e)=>setName(e.target.value)}/>
-                    <button onClick={updateProfileChanges} className='profile-update-btn'>Update Profile</button>
+                    <button onClick={updateProfileChanges} className='profile-update-btn profile-btn'>Update Profile</button>
+                    <button onClick={handleDeleteUser} className='profile-delete-btn profile-btn'> Delete User</button>
                 </div>
+                : "" }
 
 
             </div>

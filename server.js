@@ -265,6 +265,8 @@ app.get("/user/getnooto/:uid", async (req, res) => {
         const available = await User.findOne({"UID": req.params.uid}).populate("Nooto", "title owner");
 
         let availableList = []
+
+    try {
     for (let j = 0; j < available.Nooto.length; j++) {
         availableList.push(JSON.stringify(available.Nooto[j]._id).replace(/\"/g, ""))
         console.log(available.Nooto[j]._id)
@@ -279,6 +281,10 @@ app.get("/user/getnooto/:uid", async (req, res) => {
         clearnNooto(user, user.Nooto, availableList)
         //console.log(available)
         res.json(available)
+    } catch {
+        res.status(404)
+        res.send("ERROR in getting User Nooto in profile")
+    }
 
 })
 
@@ -364,6 +370,16 @@ app.post('/updateshare', async (req,res) => {
 })
 
 
+
+app.delete('/users/:uid', async (req,res) => {
+    console.log(req.params.id)
+    const user = await User.findOne({"UID": req.params.uid}).deleteOne();
+    console.log(user)
+
+    await noo.deleteMany({ "owner": req.params.uid })
+    console.log("Deleted User and Nooto")
+    res.json({state: "Success"})
+})
 
 
 
