@@ -54,6 +54,7 @@ export default function Drawing() {
     const [shareNames, setShareNames] = useState()
 
     let currentRight = useRef(0);
+    let noteBoard = useRef();
 
 
 
@@ -285,7 +286,7 @@ export default function Drawing() {
 
     const handleDeleteNooto = () => {
         if (currentUser) {
-            axios.post('/deleteNooto', {
+            axios.post('/nooto/delete', {
                 id: state.Id,
                 UID: currentUser.uid
             }).then(res=>{
@@ -313,6 +314,7 @@ export default function Drawing() {
 
     const handleSettingPanel = () => {
         setSettingPanel(!settingPanel)
+        setSharePanel(false)
         let panel = document.getElementsByClassName("setting-panel-container")[0]
 
 /*
@@ -325,8 +327,10 @@ export default function Drawing() {
         */
     }
 
-    const handleAddShare = () => {
+    const handleAddShare = (e) => {
+        e.preventDefault()
         let field = document.getElementsByClassName("share-field")[0].value
+        
         let newShareValue = state.share
         if (state.share.includes(field)) {
             return
@@ -342,15 +346,18 @@ export default function Drawing() {
             difference: field,
             type:"Add"
          }).then((res) => {
-            if (res.data.shareNames) {
+            if (res.status === 200 && res.data.shareNames) {
                 console.log(res.data.shareNames)
                 setShareNames(res.data.shareNames)
+                setstate({...state, share:newShareValue})
+            } {
             }
+         }).catch(err=> {
+            console.log("400 STATUS, No user added" + err.response.status)
          })
     
 
 
-        setstate({...state, share:newShareValue})
     }
   
 
@@ -385,7 +392,12 @@ export default function Drawing() {
 
 
     const calibrateForScreenSize = () => {
-        let board = document.getElementsByClassName("board")[0];
+        //let board = document.getElementsByClassName("board")[0];
+        let board = noteBoard.current
+        if (board == undefined) {
+            //return
+        }
+
         console.log(currentRight.current)
         if (board.classList.contains("right-active")) {
             board.classList.remove("right-active")
@@ -402,11 +414,11 @@ export default function Drawing() {
     }
 
     useEffect(() => {
-        let event = window.addEventListener('resize', calibrateForScreenSize);
+        window.addEventListener('resize', calibrateForScreenSize);
         
 
 
-        return event
+        return () => window.removeEventListener('resize', calibrateForScreenSize)
     }, [])
 
     useEffect(() => {
@@ -576,7 +588,7 @@ export default function Drawing() {
                         <div className='share-add-section'>
                             <h3 className='share-titles'>Add user to this Nooto</h3>
                             <input className='share-field' type="text"/>
-                            <button onClick={handleAddShare} className='share-add-btn'> Add User</button>
+                            <button onClick={(e)=>handleAddShare(e)} className='share-add-btn'> Add User</button>
 
 
                         </div>
@@ -673,7 +685,7 @@ export default function Drawing() {
 
         
 
-        <div class="board">
+        <div ref={noteBoard} class="board">
        {/*<input onChange={(e)=>handleDocumentTitle(e)}/>*/}
        <input disabled={!isCondense? false : true} className="doc-title" spellcheck="false" onChange={(e)=>handleDocumentTitle(e)} value={state.title}/>
 

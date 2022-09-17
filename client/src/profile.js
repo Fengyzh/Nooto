@@ -177,11 +177,11 @@ export default function Profile() {
                     </div>
 
                     <div className='profile-edit-label-container'>
-                        <label for="profile-edit-name" className='profile-edit-labels'> Name: </label>
+                        <h3 className='profile-edit-labels'> Name: </h3>
                     </div>
                     <input id="profile-edit-name" className='profile-edit-name' type="text" placeholder={currentUser && currentUser.displayName? currentUser.displayName : ""} onChange={(e)=>setName(e.target.value)}/>
                     <button onClick={updateProfileChanges} className='profile-update-btn profile-btn'>Update Profile</button>
-                    <button onClick={handleDeleteUser} className='profile-delete-btn profile-btn'> Delete User</button>
+                    <button onClick={handleDeleteUser} className='profile-delete-btn profile-btn'> Delete Account</button>
                 </div>
                 : "" }
 

@@ -19,65 +19,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/nooto", nootoRouter)
 
 
-function check(req, res, next) {
-    console.log(req.session)
-    next()
-}
-
-// create a GET route
-app.get('/title', (req, res) => { //Line 9
-
-console.log("yes")
-res.json({text:"Hello"})
-
-}); //Line 11
 
 
-app.get("/", (req, res) => {
-
-    if (req.session.auth) {
-    res.writeHead(302, {
-        Location: 'http://localhost:3000/profile'
-    });
-    res.end();
-}
- else{
-     res.send("Invalid")
- }
-
-});
-
-
-
-// create a POST route
-
-
-
-app.get('/auth', (req, res) => {
-
-    //console.log(req.session)
-    if (req.session.auth == true) {
-        res.json({auth:true, name:req.session.username})
-    } else {
-        //console.log("not auth")
-        res.json({auth:false, name:req.session.username})
-    }
-
-
-})
-
-
+/*
 app.post('/save', async (req, res) => {
 
     console.log("save....")
     var ObjectId = mongoose.Types.ObjectId
-
-    //console.log(req.body.values)
-    /*
-    let note = new notes({
-        values: req.body.values
-    });
-    */
 
     let note = new noo({
         title: req.body.title,
@@ -85,13 +33,7 @@ app.post('/save', async (req, res) => {
         lastModified: req.body.lastModified,
         share: req.body.share
     })
-/*
-    try {
-        note = await notes.findById({"_id": req.body.id});
-        note.values = req.body.values
-    } catch {
-        console.log("new note")
-    }*/
+
 
     //try {
         note = await noo.findById({"_id": req.body.id});
@@ -100,49 +42,6 @@ app.post('/save', async (req, res) => {
         note.lastModified = req.body.lastModified
         note.share = req.body.share
 
-        //console.log(req.body.share)
-        //console.log("string: " + note.toString())
-
-        /*
-        for(let i = 0; i < note.share.length; i++) {
-            console.log("inLoop Users: " + req.body.share[i])
-            //console.log(ObjectId(req.body.id))
-
-            usr = await User.findOne({UID: note.share[i]})
-            console.log("Current user Nootos: " + usr.Nooto)
-            console.log("body: " + req.body.id)
-
-            if (usr) {
-
-                let result = usr.Nooto.filter((value) => 
-                    {
-                    console.log(value.toString())
-                    return value.toString() == req.body.id
-                    }
-                               
-                )
-                
-                console.log("Result array: " + result)
-
-                if (result.length == 0) {
-                    console.log("adding to user: " + usr.UID)
-                    usr.Nooto.push(ObjectId(req.body.id))
-                    usr.save()
-                }
-            }
-            
-        }
-
-
-    //}catch{
-      //  console.log("new note")
-    //}
-
-    /*
-    const noteSave = new notes({
-        values: req.body.values
-    });
-*/
     note.save().then(data => {
         res.json(data)
     }).catch(err => {
@@ -150,6 +49,8 @@ app.post('/save', async (req, res) => {
     })
 
 })
+
+*/
 
 /*
 app.get('/posts/:id', async (req, res) => {
@@ -276,27 +177,32 @@ app.post('/user/name', async (req, res) => {
 
 
 app.post('/share/delete', async (req, res) => {
+    console.log("Starting share delete")
     console.log(req.body)
 
     
     let note = await noo.findById({"_id": req.body.id});
-    note.share = req.body.share
 
-    let names = []
-    for (let i = 0; i < req.body.share.length; i++) {
-        let name = await User.findOne({"UID": req.body.share[i]}).select("Name UID");
-        names.push(name)
+    if (note) {
+        note.share = req.body.share
+
+        let names = []
+        for (let i = 0; i < req.body.share.length; i++) {
+            let name = await User.findOne({"UID": req.body.share[i]}).select("Name UID");
+            names.push(name)
+        }
+            console.log("In delete update....")
+
+            clearNootoOne(req.body.difference[0], req.body.id)
+            note.save().then(() => {
+                console.log("names: " + names)
+                res.json({share:note.share, shareNames: names})
+                
+            })
+        
+    } else {
+        res.status(400)
     }
-        console.log("In delete update....")
-
-        clearNootoOne(req.body.difference[0], req.body.id)
-        note.save().then(() => {
-            console.log("names: " + names)
-            res.json({share:note.share, shareNames: names})
-            
-        })
-    
-
     
 })
 
@@ -305,53 +211,94 @@ app.post('/share/delete', async (req, res) => {
 app.post('/updateshare', async (req,res) => {
 
     let note = await noo.findById({"_id": req.body.id});
-    note.share = req.body.share
 
-    console.log("Updating Share Values")
-    //console.log(req.body.share)
-    //console.log("string: " + note.toString())
-    let names = []
-    for (let i = 0; i < req.body.share.length; i++) {
-        let name = await User.findOne({"UID": req.body.share[i]}).select("Name UID");
-        names.push(name)
-    }
+    if (note) {
+        note.share = req.body.share
 
-
-    for(let i = 0; i < note.share.length; i++) {
-        console.log("inLoop Users: " + req.body.share[i])
-        //console.log(ObjectId(req.body.id))
-
-        usr = await User.findOne({UID: note.share[i]})
-        console.log("Current user Nootos: " + usr.Nooto)
-        console.log("body: " + req.body.id)
-
-        if (usr) {
-
-            let result = usr.Nooto.filter((value) => 
-                {
-                console.log(value.toString())
-                return value.toString() == req.body.id
-                }
-                           
-            )
-            
-            console.log("Result array: " + result)
-
-            if (result.length == 0) {
-                console.log("adding to user: " + usr.UID)
-                usr.Nooto.push(ObjectId(req.body.id))
-                usr.save()
-            }
+        console.log("Updating Share Values")
+        //console.log(req.body.share)
+        //console.log("string: " + note.toString())
+        let names = []
+        for (let i = 0; i < req.body.share.length; i++) {
+            let name = await User.findOne({"UID": req.body.share[i]}).select("Name UID");
+            names.push(name)
         }
-        
 
-    }
+        let usr = await User.findOne({UID: req.body.difference})
+        if (!usr){
+            console.log("User not found, skipping")
+            res.status(400)
+            res.json({})
+            return
+        }
+
+        let result = usr.Nooto.filter((value) => 
+        {
+        console.log(value.toString())
+        return value.toString() == req.body.id
+        }
+                
+    )
+            
+        console.log("Result array: " + result)
+
+        if (result.length == 0) {
+            console.log("adding to user: " + usr.UID)
+            usr.Nooto.push(ObjectId(req.body.id))
+            usr.save()
+        }
+
+
+
+/*
+        for(let i = 0; i < note.share.length; i++) {
+            console.log("inLoop Users: " + req.body.share[i])
+            //console.log(ObjectId(req.body.id))
+
+            usr = await User.findOne({UID: note.share[i]})
+            if (!usr) {
+                console.log("User Not Found, Skipping")
+                res.status(400)
+                res.json()
+                return
+            }
+
+            console.log("Current user Nootos: " + usr.Nooto)
+            console.log("body: " + req.body.id)
+
+            if (usr) {
+
+                let result = usr.Nooto.filter((value) => 
+                    {
+                    console.log(value.toString())
+                    return value.toString() == req.body.id
+                    }
+                            
+                )
+                
+                console.log("Result array: " + result)
+
+                if (result.length == 0) {
+                    console.log("adding to user: " + usr.UID)
+                    usr.Nooto.push(ObjectId(req.body.id))
+                    usr.save()
+                }
+            }
+    } */
+
     
-    note.save().then(() => {
-        console.log("names: " + names)
+        
+        note.save().then(() => {
+            console.log("names: " + names)
+            res.status(200)
+            res.json({share: note.share, shareNames: names})
+        })
+    
+    } else {
+        res.status(400)
+        res.json()
+    }
 
-        res.json({share: note.share, shareNames: names})
-    })
 
 })
 
@@ -431,7 +378,7 @@ function clearnNooto(user, fullList, availableList) {
 
 
 
-
+/*
 app.post("/nooto/newNooto", async (req,res)=>{
     let date = new Date().toLocaleString()
 
@@ -471,12 +418,10 @@ app.post("/nooto/newNooto", async (req,res)=>{
         res.json("Error in creating new Nooto")
     })
 
-    
-
-
 })
+*/
 
-
+/*
 app.post("/deleteNooto", async (req, res) => {
     //try {
     await noo.findById({"_id": req.body.id}).deleteOne();
@@ -505,12 +450,9 @@ app.post("/deleteNooto", async (req, res) => {
 
     console.log("Nooto Deleted, ID: " + req.body.id)
     res.json("Nooto Deleted")
-    /*
-    } catch {
-        console.log("Unable to delete Nooto")
-    }*/
-})
 
+})
+*/
 
 mongoose.connect('mongodb+srv://Feng:Feng1293875db@cluster0.odbkl.mongodb.net/Nooto?retryWrites=true&w=majority', () => {
     console.log("Conncted To Mongo")

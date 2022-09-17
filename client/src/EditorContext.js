@@ -83,7 +83,7 @@ const handleSave = () => {
     let date = new Date().toLocaleString()
     
 
-    axios.post('/save', {
+    axios.post('/nooto/save', {
         id: currentState.current.Id,
         title: currentState.current.title,
         values: currentState.current.values,

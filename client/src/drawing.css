@@ -353,7 +353,7 @@ pre{
 }
 
 .nav-bar{
-  position: -webkit-sticky;
+  position: fixed;
   margin: 0;
   top: 0;
   width: 100%;

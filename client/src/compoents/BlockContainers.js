@@ -34,7 +34,7 @@ export default function BlockContainers({value, vIndex, index, EditThis}) {
                         <ReactMarkdown components={{
                             pre: ({node, ...props}) => 
                             <div>
-                                <pre {...props}> {props.children}{console.log(props.children[0].props.className)} </pre>
+                                <pre {...props}> {props.children} </pre>
                             </div>,
 
                             h1: ({node, ...props}) =>
