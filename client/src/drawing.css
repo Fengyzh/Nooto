@@ -181,6 +181,7 @@ html {
   transition: 0.4s;
   flex-shrink: 0;
   flex-grow: 0;
+  z-index: 99;
 
 }
 
@@ -450,6 +451,7 @@ pre{
   border: 1px solid transparent;
   background-color: transparent;
   margin: 1rem 0;
+  margin-top: 2rem;
   font-weight: bold;
 }
 
@@ -764,7 +766,7 @@ pre{
 
 
 
-@media only screen and (max-width: 765px) {
+@media only screen and (max-width: 600px) {
   .full{
     width: 100%;
   }
@@ -784,5 +786,32 @@ pre{
   .right {
     width: 0;
   }
+
+  .title {
+    font-size: 150%;
+  }
+
+  .setting-icon{
+    font-size: 120%;
+  }
+
+  .block-container{
+    width: 90%;
+  }
+
+  .mode-title {
+    width: 50%;
+    font-size: 5vw;
+  }
+
+
+  .titles{
+    font-size: 8vw;
+  }
+
+  .doc-title{
+    font-size: 5vw;
+  }
+
 
 }

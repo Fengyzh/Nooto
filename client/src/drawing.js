@@ -179,7 +179,11 @@ export default function Drawing() {
         } else {
             arrow.style.transform = "rotateY(180deg)"
             navPanel.style.padding = "1rem";
-            navPanel.style.width = "15%";
+            if (isCondense){
+                navPanel.style.width = "70%";
+            } else {
+                navPanel.style.width = "15%";
+            }
             navPanel.style.opacity = 100;
             navPanel.style.minWidth = "15%"
             navPanel.style.transform = "translateX(0)"
@@ -389,13 +393,20 @@ export default function Drawing() {
     }
 
 
+    const windowSizeCheck = () => {
+        if (window.innerWidth < 765) {
+            setCondense(true)
+        } else {
+            setCondense(false)
+        }
+    }
 
 
     const calibrateForScreenSize = () => {
         //let board = document.getElementsByClassName("board")[0];
         let board = noteBoard.current
         if (board == undefined) {
-            //return
+            return
         }
 
         console.log(currentRight.current)
@@ -403,19 +414,15 @@ export default function Drawing() {
             board.classList.remove("right-active")
             setRight(!currentRight.current)
         }
-        if (window.innerWidth < 765) {
-            setCondense(true)
-        } else {
-            setCondense(false)
-        }
+        windowSizeCheck()
 
         console.log(window.innerWidth)
 
     }
 
     useEffect(() => {
+        windowSizeCheck()
         window.addEventListener('resize', calibrateForScreenSize);
-        
 
 
         return () => window.removeEventListener('resize', calibrateForScreenSize)

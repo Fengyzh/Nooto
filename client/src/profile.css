@@ -54,7 +54,6 @@
 
 .welcome-block{
     margin: 3rem 0;
-
     padding: 0 1rem;
     font-size: 300%;
 }
@@ -92,6 +91,7 @@ h1.head-bar-items {
 
 .profile-section{
     display: flex;
+    margin: 3rem 0;
     flex-direction: column;
     align-items: center;
     margin-right: 1rem;
@@ -117,6 +117,7 @@ h1.head-bar-items {
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
     transition: 0.3s ease-in-out;
+    z-index: 99;
 }
 
 .profile-container{
@@ -212,6 +213,25 @@ h1.head-bar-items {
 }
 
 
+@media only screen and (max-width: 600px) {
+    .head-bar-btn{
+        padding: 0.5rem
+    }
+
+    .nooto-container{
+        flex-direction: column;
+    }
+
+    .profile-Nooto-block{
+        width: 100%;
+    }
+    
+    .profile-edit{
+        width: 80%;
+    }
+
+    
+  }
 
 
 
