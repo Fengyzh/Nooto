@@ -1,12 +1,11 @@
 const express = require('express'); 
 const cors = require("cors");
-var session = require('express-session');
 const mongoose = require('mongoose')
-const notes = require('./notes')
 const noo = require('./newNote')
 const User = require('./User')
 var ObjectId = require('mongodb').ObjectId;
 const nootoRouter = require("./Routes/nootoRoute")
+
 
 const app = express(); 
 const port = 4000; 
@@ -17,7 +16,6 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use("/nooto", nootoRouter)
-
 
 
 

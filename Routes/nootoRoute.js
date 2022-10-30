@@ -3,7 +3,19 @@ const nootoRouter = express.Router()
 const noo = require('../newNote')
 const User = require('../User')
 const mongoose = require('mongoose')
+const Redis = require('redis')
 
+const DEFAULT_EXPIRATION_TIME = 5000
+let redisClient;
+
+(async () => {
+  redisClient = Redis.createClient();
+
+  redisClient.on("error", (error) => console.error(`Error : ${error}`));
+
+  await redisClient.connect();
+  console.log("Redis connected")
+})();
 
 
 
@@ -12,25 +24,38 @@ nootoRouter.post('/', async (req, res) => {
     console.log("owner: " + req.body.UID)
     
     let names = []
+    let note
 
     try {
-        const note = await noo.findById({"_id": req.body.NootoID});
-        if (note.owner === req.body.UID || note.share.includes(req.body.UID)) {
-            for (let i = 0; i < note.share.length; i++) {
-                let name = await User.findOne({"UID": note.share[i]}).populate("Name", "UID");
-                names.push(name)
-            }
+        cache = await redisClient.get(req.body.NootoID)
+        if (cache) {
+            note = JSON.parse(cache)
+            console.log("fetching from redis")
 
-
-            res.json({note, state:"Pass", shareNames:names})
         } else {
-            res.json({state: "No Permission"})
+            note = await noo.findById({"_id": req.body.NootoID});
+            console.log("fetching from db")
+            await redisClient.setEx(String(req.body.NootoID), DEFAULT_EXPIRATION_TIME,JSON.stringify(note))
         }
-        //console.log(note)
-    } catch (err) {
+
+        if (note.owner === req.body.UID || note.share.includes(req.body.UID)) {
+
+                for (let i = 0; i < note.share.length; i++) {
+                    let name = await User.findOne({"UID": note.share[i]}).populate("Name", "UID");
+                    names.push(name)
+                }
+
+                //await redisClient.setEx(req.body.UID, DEFAULT_EXPIRATION_TIME, JSON.stringify(note))
+                res.json({note, state:"Pass", shareNames:names})
+            } else {
+                res.json({state: "No Permission"})
+            }
+    } catch(err) {
         console.log(222)
         res.json({state: "Error"})
     }
+
+    
 })
 
 
