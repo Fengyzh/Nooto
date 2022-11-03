@@ -78,8 +78,12 @@ nootoRouter.post('/save', async (req, res) => {
         note.lastModified = req.body.lastModified
         note.share = req.body.share
 
-    note.save().then(data => {
-        res.json(data)
+    note.save().then(async data => {
+        console.log(req.body.id)
+        await redisClient.setEx(String(req.body.id), DEFAULT_EXPIRATION_TIME,JSON.stringify(note)).then(()=>
+            res.json(data)
+        )
+
     }).catch(err => {
         res.json("Error")
     })
