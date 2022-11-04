@@ -9,7 +9,13 @@ const DEFAULT_EXPIRATION_TIME = 5000
 let redisClient;
 
 (async () => {
-  redisClient = Redis.createClient();
+ // Without Docker redis start
+  //redisClient = Redis.createClient();
+
+// With Docker redis
+ redisClient = Redis.createClient({
+    url:'redis://redis:6379'
+ })
 
   redisClient.on("error", (error) => console.error(`Error : ${error}`));
 
