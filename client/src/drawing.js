@@ -24,7 +24,7 @@ export default function Drawing() {
     let {state, setstate, handleSave, setSave, setCondense, isCondense, handleScroll} = BoardEditingContext()
 
 /*
-    What I did last time:
+    Change History:
         Created a "EditThis" function so the user can click this to open the edit panel
         instead of having to toggle.
             - Do this because we don't want users to edit multiple blocks at the same time
@@ -75,8 +75,7 @@ export default function Drawing() {
         const value = [...state.values]    //Spread the state into individual array elements
         value[index]["value"][vIndex]["text"] = e.target.value  //Set the key named "value" in that index to the input
         setstate({...state,values:value}) //Update the state with the new state
-        //console.log(state["values"][index])
-        //console.log(state)
+
         setSave(true)
 
 
@@ -87,65 +86,6 @@ export default function Drawing() {
 
 
     }
-
-
-
-    /*
-    function handleEdit(index, vIndex) {
-        let value = [...state.values]    
-        //value[index]["edit"] = !value[index]["edit"]
-        value[index]["value"][vIndex]["editable"] = !value[index]["value"][vIndex]["editable"]
-        setstate({...state, values:value})
-        setRightContent({index:index, vIndex:vIndex})
-        */
-        /*
-        for (let i = 0; i < state.values[index]["value"].length; i++) {
-            if (state.values[index]["value"]["editable"] && i != vIndex) {
-                value[index]["value"][i]["editable"] = !value[index]["value"][i]["editable"]
-                setstate({...state, values:value})
-            }
-        }
-        */
-
-        /*
-        if (!right) {
-            handleRight()
-        }
-        */
-
-
-        /*
-        let textField = document.getElementsByClassName("textarea")[index];
-        let markdownField = document.getElementsByClassName("results")[index];
-        console.log("text: ", markdownField)
-
-        if (state.values[index].edit == false){
-            textField.style.opacity = 0
-            textField.style.display = "none"
-            markdownField.style.display = "block"
-        } else {
-            textField.style.opacity = 1
-            textField.style.display = "block"
-            markdownField.style.display = "none"
-        }
-*/
-    //}
-
-    /*
-    function handleCloseAll() {
-        const value = [...state.values]
-        for (var i = 0; i < state.values.length; i++) {
-            value[i]["edit"] = false
-            setstate({values:value})
-        }
-    }
-*/
-
-
-
-
-
-
 
 
     const retractPanel = () => {
@@ -193,17 +133,6 @@ export default function Drawing() {
         
     }
 
-/*
-    const handleScroll = (index) => {
-       // Right now it will only scroll to the first element
-
-        let boxes = document.getElementsByClassName("section-containers");
-        console.log(boxes[index].getBoundingClientRect().top)
-        //boxes[0].scrollIntoView({ behavior: 'smooth' })
-       const y = boxes[index].getBoundingClientRect().top + window.pageYOffset - 30
-        window.scrollTo({top:y, left:0, behavior: 'smooth'})
-    }
-*/
 
     const handleAdditionalBlock = (index) => {
         let value = state.values
@@ -259,10 +188,7 @@ export default function Drawing() {
 
     
     const EditThis = (index, vIndex) => {
-        //let value = [...state.values]
-        //value[index]["value"][vIndex]["editable"] = !value[index]["value"][vIndex]["editable"]
-    
-        //setstate({...state, values:value})
+ 
         setRightContent({index:index, vIndex:vIndex})
 
         if (!right) {
@@ -290,7 +216,7 @@ export default function Drawing() {
 
     const handleDeleteNooto = () => {
         if (currentUser) {
-            axios.post('/nooto/delete', {
+            axios.post('/api/nooto/delete', {
                 id: state.Id,
                 UID: currentUser.uid
             }).then(res=>{
@@ -302,33 +228,11 @@ export default function Drawing() {
 
     // ------ Util function
 
-/*
-    function swapSection(from, to) {
-        let tempStateValues = state.values
-        let temp = tempStateValues[from]
-        tempStateValues[from] = tempStateValues[to]
-        tempStateValues[to] = temp
-        setstate({...state, values:tempStateValues})
-
-        handleScroll(to)
-
-        setSave(true)
-    }
-    */
-
     const handleSettingPanel = () => {
         setSettingPanel(!settingPanel)
         setSharePanel(false)
         let panel = document.getElementsByClassName("setting-panel-container")[0]
 
-/*
-        if (!settingPanel) {
-            panel.style.transform= "translateX(-25rem)"
-        } else {
-            panel.style.transform= "translateX(0rem)"
-
-        }
-        */
     }
 
     const handleAddShare = (e) => {
@@ -344,7 +248,7 @@ export default function Drawing() {
         console.log(newShareValue)
 
         
-        axios.post('/updateshare', {
+        axios.post('/api/updateshare', {
             id: state.Id,
             share: newShareValue,
             difference: field,
@@ -376,7 +280,7 @@ export default function Drawing() {
         console.log("delete")
         
         
-        axios.post('/share/delete', {
+        axios.post('/api/share/delete', {
             id: state.Id,
             share: newShareValue,
             difference: deleteList,
@@ -403,7 +307,6 @@ export default function Drawing() {
 
 
     const calibrateForScreenSize = () => {
-        //let board = document.getElementsByClassName("board")[0];
         let board = noteBoard.current
         if (board == undefined) {
             return
@@ -478,65 +381,8 @@ export default function Drawing() {
           })
         }
 
-/*
-        axios.get(`/posts/${id}`).then((res) => {
-
-            if (res.data != 'Error') {
-                setstate({Id:res.data._id, 
-                    title:res.data.title,
-                    lastModified: res.data.lastModified,
-                    createdDate: res.data.createdDate,
-                    owner: res.data.owner,
-                    share: res.data.share,
-                    values:res.data.values})
-                setLoad(!load)
-                console.log(res.data)
-            } else {
-                setLoad(false)
-                setFail("Error")
-                // TODO: Make this a post and let the server decide whether the current user has permission
-                // If not, return 'Error', else return the data
-                
-                //navigate("/")
-            }
-        })
-*/
 
 
-
-        /*
-        .then(()=>{
-            
-            for (let i = 0; i < state.values.length; i++) {
-                for (let j = 0; j < state.values[i]["value"].length; j++) {
-                    
-                    if (state.values[i]["value"][j].editable) {
-                        console.log(999)
-                        textFields[i+j].style.height = "auto";
-                        textFields[i+j].style.height = textFields[i+j].scrollHeight + "px"
-                    }
-                }
-            }
-            
-
-            
-            for (let i = 0; i < state.values.length; i++) {
-                if (state.values[i].edit == false){
-                    textFields[i].style.opacity = 0
-                    textFields[i].style.display = "none"
-                    markdownFields[i].style.display = "block"
-                } else {
-                    textFields[i].style.opacity = 1
-                    textFields[i].style.display = "block"
-                    markdownFields[i].style.display = "none"
-                }
-
-               
-                textFields[i].style.height = "auto";
-                textFields[i].style.height = textFields[i].scrollHeight + "px"
-                
-            }
-        })*/
 
 
     }, [currentUser])

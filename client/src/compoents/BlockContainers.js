@@ -77,8 +77,8 @@ export default function BlockContainers({value, vIndex, index, EditThis}) {
                 {/*<button class="toggle-btn btn" onClick={() => handleEdit(index, vIndex)}> Toggle Edit </button>*/}
                 {!isCondense?
                 <div class="block-controls-container">
-                  <button class="delete-btn block-btn" onClick={() => handleBlockDelete(vIndex, index)}> Delete Block </button>
                   <button class="toggle-btn block-btn" onClick={() => EditThis(index, vIndex)}>Edit Block </button>
+                  <button class="delete-btn block-btn" onClick={() => handleBlockDelete(vIndex, index)}> Delete Block </button>
                 </div>
                 : "" }
 

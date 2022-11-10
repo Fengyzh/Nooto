@@ -10,12 +10,13 @@ let redisClient;
 
 (async () => {
  // Without Docker redis start
-  //redisClient = Redis.createClient();
+  redisClient = Redis.createClient();
 
 // With Docker redis
- redisClient = Redis.createClient({
-    url:'redis://redis:6379'
- })
+
+ //redisClient = Redis.createClient({
+ //   url:'redis://redis:6379'
+ //})
 
   redisClient.on("error", (error) => console.error(`Error : ${error}`));
 

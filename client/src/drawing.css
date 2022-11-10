@@ -129,7 +129,6 @@ html {
 
 .block-btn {
   width: 20%;
-  margin-left: auto;
   margin-right: 2rem;
   margin-top: 20px;
   border-radius: 20px;
@@ -138,12 +137,28 @@ html {
   transition: 0.4s;
   background-color: rgb(218, 218, 218);
   cursor: pointer;
+  font-weight: 600;
+}
+
+.block-controls-container{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .block-btn:hover {
   color:white;
   background-color: black;
 }
+
+.delete-btn {
+  width: 10%;
+}
+
+.delete-btn:hover {
+  background-color: var(--red);
+}
+
 
 .block-container{
   width: 100%;
@@ -800,8 +815,8 @@ pre{
   }
 
   .mode-title {
-    width: 50%;
-    font-size: 5vw;
+    width: 40%;
+    font-size: 3vw;
   }
 
 

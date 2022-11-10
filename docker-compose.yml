@@ -13,6 +13,8 @@ services:
     build:
       dockerfile: dockerfile
       context: ./
+    ports:
+      - '4000:80'
     depends_on:
       - redis
 

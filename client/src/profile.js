@@ -66,7 +66,7 @@ export default function Profile() {
 
     const handleNewNooto = () => {
         if (currentUser) {
-        axios.post('/nooto/newNooto', {
+        axios.post('/api/nooto/newNooto', {
             UID: currentUser.uid
         }).then(res=>{
             console.log(res.data)
@@ -93,7 +93,7 @@ export default function Profile() {
     function updateProfileChanges() {
         if (currentUser) {
             
-             axios.post('/user/name', {
+             axios.post('/api/user/name', {
                 uid: currentUser.uid,
                 newName: name
             })
@@ -115,7 +115,7 @@ export default function Profile() {
 
     async function handleDeleteUser() {
             if (currentUser) {
-                await axios.delete(`/users/${currentUser.uid}`).then((res) => {
+                await axios.delete(`/api/users/${currentUser.uid}`).then((res) => {
                 deleteUser(currentUser)
 
             })
@@ -127,7 +127,7 @@ export default function Profile() {
 
     useEffect(() => {
         if (currentUser) {
-        axios.get(`/user/getnooto/${currentUser.uid}`
+        axios.get(`/api/user/getnooto/${currentUser.uid}`
         ).then (res => {
             if (res && res.data) {
             console.log("success")
