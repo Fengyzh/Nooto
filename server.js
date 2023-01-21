@@ -452,7 +452,7 @@ app.post("/deleteNooto", async (req, res) => {
 })
 */
 
-mongoose.connect('mongodb+srv://Feng:Feng1293875db@cluster0.odbkl.mongodb.net/Nooto?retryWrites=true&w=majority', () => {
+mongoose.connect(PROCESS.ENV.MONGO, () => {
     console.log("Conncted To Mongo")
 });
 
